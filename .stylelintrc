@@ -1,0 +1,30 @@
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-recommended", "stylelint-config-rational-order"],
+  "plugins": ["stylelint-order"],
+  "rules": {
+    "selector-class-pattern": "^.*$",
+    "property-no-vendor-prefix": null,
+    "keyframes-name-pattern": "[a-z0-9]-\\w+$",
+    "at-rule-no-unknown": null,
+    "declaration-no-important": true,
+    "declaration-property-unit-allowed-list": {
+      "font-size": ["em", "px", "%"],
+      "/^animation/": "s"
+    },
+    "declaration-block-no-redundant-longhand-properties": [
+      true,
+      {
+        "ignoreShorthands": ["/grid/"]
+      }
+    ],
+    "declaration-empty-line-before": null,
+    "order/properties-order": [],
+    "plugin/rational-order": [
+      true,
+      {
+        "border-in-box-model": false,
+        "empty-line-between-groups": true
+      }
+    ]
+  }
+}

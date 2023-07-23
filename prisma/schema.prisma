@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// https://vercel.com/guides/nextjs-prisma-postgres
+// https://www.prisma.io/nextjs
+// https://www.prisma.io/docs/concepts/components/prisma-client
+// https://www.prisma.io/docs/concepts/components/prisma-schema/data-model
+datasource db {
+  provider = "sqlite"
+  url      = env("NEXT_PUBLIC_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+// The base table about the user.
+model User {
+  id        Int             @id @default(autoincrement())
+  createdAt DateTime        @default(now())
+  name      String          @default("User")
+  role      String          @default("USER")
+  addresses Address[]
+  profile   Profile?
+  curses    Curs[]
+  author_curs Author_Curs[]
+}
+// Main the tabel of the data about the user.
+model Profile{
+  id          Int       @id @default(autoincrement())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int       @unique
+  email       String    @unique
+  firstname   String?
+  lastname    String?
+  age         Int       @default(0)
+}
+// The table of the address cripto wallet.
+model Address{
+  id        Int      @id @default(autoincrement())
+  address   String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+}
+// The table of the curses that made the authores.
+model Curs {
+  id            Int        @id @default(autoincrement())
+  title         String     @unique
+  user          User       @relation(fields: [authorId], references: [id])
+  authorId      Int
+  type          String
+  description   String
+  coverImage    String
+  author        String
+  link          String
+  slug          String
+  wsl           Wsl[]
+  author_curses Author_Curs[]
+  createdAt     DateTime   @default(now())
+  updateAt      DateTime   @updatedAt
+}
+// It's table one-to-one for the author that made the curses
+model Author_Curs{
+  id            Int      @id @default(autoincrement())
+  user          User     @relation(fields: [authorId], references: [id])
+  curse         Curs     @relation(fields: [curseId], references: [id])
+  authorId      Int
+  curseId       Int      @unique
+}
+// The keypoint in curses
+model Wsl{
+  id            Int      @id @default(autoincrement())
+  curses        Curs     @relation(fields: [cursesId], references: [id])
+  cursesId      Int
+  text          String
+}
