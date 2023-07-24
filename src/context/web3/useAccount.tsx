@@ -1,3 +1,4 @@
+// https://docs.metamask.io/wallet/reference/provider-api/
 import { useEffect, useState, useCallback } from 'react';
 
 import { MetaMaskEthereumProvider } from '@src/context/web3';
@@ -62,29 +63,33 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
 
   /*** Get all account from `MetaMask` */
   const getAccounts = useCallback(async (): Promise<void> => {
-    setIsLoading(false);
+    setIsLoading(true);
     if (web3) {
       const accs = await web3.eth.getAccounts();
       setAcc(accs);
       const network = await web3.eth.getChainId();
       setChainId(network.toString());
+      setIsLoading(false);
     }
   }, [web3]);
 
   const setAccountListener = useCallback(
     (prov: MetaMaskEthereumProvider): void => {
       if (!prov) return;
-      prov.on('accountsChanged', accs => {
-        if (accs && accs.length > 0 && address !== accs[0]) {
-          setIsAdmin(false);
-          setAddress(accs[0]);
-          if (accs[0] === adminAddresses[0]) setIsAdmin(true);
-          if (accs[0] === adminAddresses[1]) setIsAdmin(true);
+      prov.on('accountsChanged', async _addresses => {
+        if (web3) {
+          const accs = await web3.eth.getAccounts();
+          setAcc(accs);
         }
       });
-      // prov.on('chainChanged', (chain_id: '0x539' | '5777' | '0x5' | '0x1' | '0xe708' | '0x89') => {
-      //   if (chainId !== chain_id) setChainId(chain_id);
-      // });
+      prov.on('chainChanged', async (_: '0x539' | '5777' | '0x5' | '0x1' | '0xe708' | '0x89') => {
+        if (!web3) return;
+        const network = await web3.eth.getChainId();
+        if (chainId !== network.toString())
+          setChainId(() => {
+            return network.toString();
+          });
+      });
       prov._jsonRpcConnection?.events.on('notification', payload => {
         const { method, params } = payload;
         if (method === 'metamask_unlockStateChanged') {
@@ -93,6 +98,7 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
             setAddress(null);
             setIsLoading(true);
             setIsAdmin(false);
+            setChainId(null);
           } else setAcc(params.accounts);
         }
       });

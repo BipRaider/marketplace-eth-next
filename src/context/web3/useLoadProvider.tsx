@@ -1,3 +1,4 @@
+// https://docs.metamask.io/wallet/reference/provider-api/
 import { useEffect, useState, useCallback } from 'react';
 import detectEthereumProvider from '@metamask/detect-provider';
 
@@ -7,7 +8,7 @@ export interface ILoadProvider {
   /*** It's the metamask provider from window.*/
   provider: MetaMaskEthereumProvider | null;
   /*** Error message. If provider nod found.*/
-  errorProvider: string | null;
+  error: string | null;
   /*** State of loading to the provider.*/
   isLoading: boolean;
   /*** Reload provider.*/
@@ -16,7 +17,7 @@ export interface ILoadProvider {
 
 export const baseProviderContext: Readonly<ILoadProvider> = {
   provider: null,
-  errorProvider: null,
+  error: null,
   isLoading: true,
   loadProvider: function (): Promise<void> {
     throw new Error('loadProvider: Function not implemented.');
@@ -26,24 +27,24 @@ export const baseProviderContext: Readonly<ILoadProvider> = {
 /*** Get ethereum provider from window.*/
 export const useLoadProvider = (): ILoadProvider => {
   const [provider, setProvider] = useState<MetaMaskEthereumProvider | null>(null);
-  const [errorProvider, setErrorProvider] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const loadProvider = useCallback(async (): Promise<void> => {
     try {
+      setIsLoading(true);
       const prov = await detectEthereumProvider();
-
       if (prov) {
         setProvider(prov);
         setIsLoading(false);
-        setErrorProvider(null);
+        setError(null);
       } else {
-        setErrorProvider('Please, install the Metamask.');
+        setError('Please, install the Metamask.');
         setIsLoading(true);
         setProvider(null);
       }
     } catch {
-      setErrorProvider('Something went wrong.');
+      setError('Something went wrong.');
       setIsLoading(true);
       setProvider(null);
     }
@@ -53,5 +54,5 @@ export const useLoadProvider = (): ILoadProvider => {
     if (!provider) loadProvider();
   }, [loadProvider, provider]);
 
-  return { provider, errorProvider, loadProvider, isLoading };
+  return { provider, error, loadProvider, isLoading };
 };

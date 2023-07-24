@@ -42,6 +42,9 @@ export const Navbar: React.FC<NavBarProps> = ({ className, ...props }): React.JS
               <ActiveLink href="/marketplace" className="font-medium mr-8 text-gray-500 hover:text-gray-900">
                 {text.marketplace}
               </ActiveLink>
+              <ActiveLink href="/admin" className="font-medium mr-8 text-gray-500 hover:text-gray-900">
+                {'Admin'}
+              </ActiveLink>
             </div>
             <div>
               <ActiveLink href="#" className="font-medium mr-8 text-gray-500 hover:text-gray-900">

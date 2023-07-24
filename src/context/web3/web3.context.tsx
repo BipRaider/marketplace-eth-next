@@ -1,3 +1,4 @@
+// https://docs.metamask.io/wallet/tutorials/react-dapp-global-state/
 import React, { createContext, useContext, useEffect, useState, useMemo, PropsWithChildren } from 'react';
 
 import { ILoadProvider, baseProviderContext, useLoadProvider } from './useLoadProvider';
@@ -43,6 +44,14 @@ export const Web3ContextProvider = ({ children }: PropsWithChildren<IWeb3Context
     if (!provider.isLoading && !web3.isLoading) setIsLoading(false);
     else setIsLoading(true);
   }, [provider.isLoading, web3.isLoading]);
+
+  useEffect((): void => {
+    if (!account.isLoading) network.getNetwork();
+  }, [account.isLoading, network]);
+
+  useEffect((): void => {
+    if (account.address) balance.getBalance();
+  }, [account.address, balance]);
 
   const memoValue = useMemo((): IWeb3Context => {
     return { isLoading, web3, provider, contract, account, balance, network };

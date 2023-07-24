@@ -6,7 +6,7 @@ export interface ILoadWeb3 {
   /*** The `Web3` provider. */
   web3: Web3 | null;
   /*** Error initialize `Web3`.*/
-  errorWeb3: string | null;
+  error: string | null;
   /*** State of loading to the `Web3`.*/
   isLoading: boolean;
   /*** Reload the `Web3` provider.*/
@@ -15,7 +15,7 @@ export interface ILoadWeb3 {
 
 export const baseWeb3Context: Readonly<ILoadWeb3> = {
   web3: null,
-  errorWeb3: null,
+  error: null,
   isLoading: true,
   loadWeb3: function (): void {
     throw new Error('Function not implemented.');
@@ -25,24 +25,25 @@ export const baseWeb3Context: Readonly<ILoadWeb3> = {
 /*** Get web3 provider from window.*/
 export const useLoadWeb3 = ({ provider }: ILoadProvider): ILoadWeb3 => {
   const [web3, setWeb3] = useState<Web3 | null>(null);
-  const [errorWeb3, setErrorWeb3] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const loadWeb3 = useCallback((): void => {
     if (provider) {
+      setIsLoading(true);
       try {
         const initWeb3 = new Web3(provider as any);
         setWeb3(initWeb3);
-        setErrorWeb3(null);
+        setError(null);
         setIsLoading(false);
       } catch (e) {
-        if (e instanceof Error) setErrorWeb3(e.message);
-        setErrorWeb3('Something went wrong');
+        if (e instanceof Error) setError(e.message);
+        setError('Something went wrong');
         setWeb3(null);
         setIsLoading(true);
       }
     } else {
-      setErrorWeb3('Web3 is not init.');
+      setError('Web3 is not init.');
       setWeb3(null);
       setIsLoading(true);
     }
@@ -52,5 +53,5 @@ export const useLoadWeb3 = ({ provider }: ILoadProvider): ILoadWeb3 => {
     if (provider && !web3) loadWeb3();
   }, [loadWeb3, provider, web3]);
 
-  return { web3, loadWeb3, errorWeb3, isLoading };
+  return { web3, loadWeb3, error, isLoading };
 };

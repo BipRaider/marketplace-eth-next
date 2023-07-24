@@ -5,6 +5,8 @@ import { setupHooks } from '@src/hooks/providers/web3/hooks/setupHooks';
 
 type payloadJRpcCEon = 'metamask_unlockStateChanged' | 'metamask_chainChanged' | 'metamask_accountsChanged';
 type MMEPon = 'accountsChanged' | 'chainChanged';
+// https://ethereum.org/ru/developers/docs/apis/json-rpc/
+type REQ_METHODS = 'eth_sendTransaction' | 'eth_requestAccounts';
 
 export interface MetaMaskEthereumProvider {
   isMetaMask?: boolean;
@@ -14,7 +16,8 @@ export interface MetaMaskEthereumProvider {
   addListener(eventName: string | symbol, listener: (...args: any[]) => void): this;
   removeListener(eventName: string | symbol, listener: (...args: any[]) => void): this;
   removeAllListeners(event?: string | symbol): this;
-  request?: (data: any) => any;
+  request?: (data: { method: REQ_METHODS; params?: Record<string, unknown> }) => any;
+  _metamask?: any;
   _jsonRpcConnection?: {
     events: {
       on: (
