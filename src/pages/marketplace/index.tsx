@@ -1,12 +1,16 @@
 import React from 'react';
 
-import { WalletBar } from '@src/components/higher';
+import { CoursesPage, WalletBar } from '@src/components/higher';
 import { withLayout } from '@src/components/main';
 import { GetStaticProps } from 'next/types';
+import { getAllCourses } from '@src/content/courses/fetcher';
+import { ICourses } from '@src/types';
 
-interface Props extends Record<string, unknown> {}
+interface Props extends Record<string, unknown> {
+  courses: ICourses[];
+}
 
-const Marketplace = (): React.JSX.Element => {
+const Marketplace = ({ courses }: Props): React.JSX.Element => {
   // const { web3, contract, requireInstall } = useWeb3();
   // const { hasConnectedWallet, isConnecting, account } = useWalletInfo();
   // const { ownedCourses } = useOwnedCourses(courses, account.data);
@@ -88,6 +92,7 @@ const Marketplace = (): React.JSX.Element => {
   return (
     <>
       <WalletBar />
+      <CoursesPage courses={courses} />
       {/* <CourseList courses={courses}>
         {course => {
           const owned = ownedCourses.lookup[course.id];
@@ -203,7 +208,10 @@ const Marketplace = (): React.JSX.Element => {
 export default withLayout(Marketplace);
 
 export const getStaticProps: GetStaticProps<Props> = () => {
+  const { data } = getAllCourses();
   return {
-    props: {},
+    props: {
+      courses: data,
+    },
   };
 };

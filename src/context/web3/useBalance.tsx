@@ -1,13 +1,14 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, SetStateAction, Dispatch } from 'react';
 import { ILoadWeb3 } from './useLoadWeb3';
 
 export interface IBalance {
-  getBalance: () => void;
   /*** Balance at the wallet that now use.*/
   balance: string;
   error: string | null;
   account: string | null;
   isLoading: boolean;
+  getBalance: () => void;
+  setAccount: Dispatch<SetStateAction<string | null>>;
 }
 
 export const baseBalanceContext: Readonly<IBalance> = {
@@ -16,11 +17,14 @@ export const baseBalanceContext: Readonly<IBalance> = {
   account: null,
   isLoading: true,
   getBalance: function (): void {
-    throw new Error('Function not implemented.');
+    throw new Error('getBalance: Function not implemented.');
+  },
+  setAccount: function (_value: SetStateAction<string | null>): void {
+    throw new Error('setAccount: Function not implemented.');
   },
 };
 
-export const useBallance = ({ web3 }: ILoadWeb3, address: string | null): IBalance => {
+export const useBallance = ({ web3 }: ILoadWeb3): IBalance => {
   const [balance, setBallance] = useState<string>('0');
   const [account, setAccount] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -44,11 +48,13 @@ export const useBallance = ({ web3 }: ILoadWeb3, address: string | null): IBalan
 
   useEffect(() => {
     if (account) getBalance();
-  }, [account, getBalance, web3]);
+  }, [account, getBalance]);
 
   useEffect(() => {
-    if (address) setAccount(address);
-  }, [address]);
+    if (account) {
+      setIsLoading(false);
+    }
+  }, [account]);
 
   return {
     getBalance,
@@ -56,5 +62,6 @@ export const useBallance = ({ web3 }: ILoadWeb3, address: string | null): IBalan
     balance,
     isLoading,
     error,
+    setAccount,
   };
 };

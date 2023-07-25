@@ -14,7 +14,7 @@ let targetNetwork: string | undefined = '';
 const error_message = 'Cannot retrieve network. Please refresh the browser.';
 
 export interface INetwork {
-  /*** Get all network from `MetaMask`.*/
+  /*** Get a network from `MetaMask`.*/
   getNetwork: () => void;
   /*** State of loading to the network.*/
   isLoading: boolean;
@@ -49,14 +49,14 @@ export const useNetwork = ({ web3 }: ILoadWeb3): INetwork => {
     if (web3) {
       const chainId = await web3.eth.getChainId();
       if (!chainId) setError(error_message);
-      const net = NETWORKS.get(chainId.toString());
 
-      setNetwork(() => net);
+      const net = NETWORKS.get(chainId.toString());
+      setNetwork(net);
       setIsLoading(false);
     }
   }, [web3]);
 
-  useEffect(() => {
+  useEffect((): void => {
     if (web3) getNetwork();
   }, [getNetwork, web3]);
 

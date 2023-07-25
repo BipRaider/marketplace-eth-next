@@ -8,13 +8,12 @@ import { useWeb3Context } from '@src/context';
 const text = {
   hello: 'Hello, ',
   hope: 'I hope you are having a great day!',
-  eth: 'Ethereum Main Network',
   learn: 'Learn how to purchase',
   currently: 'Currently on',
 };
 
 export const WalletBar: React.FC<WalletBarProps> = ({ className, ...props }): React.JSX.Element => {
-  const { provider, web3, account, isLoading, balance } = useWeb3Context();
+  const { account, network } = useWeb3Context();
   return (
     <section className={cn('text-white bg-indigo-600', className)} {...props}>
       <div className="p-8">
@@ -35,9 +34,17 @@ export const WalletBar: React.FC<WalletBarProps> = ({ className, ...props }): Re
             </div>
           </div>
           <div>
+            {!network.isSupported && (
+              <div className=" p-4 bg-red-400 rounded-lg">
+                <div>Connected wrong Network</div>
+                <div>
+                  Connect to:<strong className="text-2xl pl-1">{network.target}</strong>
+                </div>
+              </div>
+            )}
             <div>
-              <span>{text.currently}</span>
-              <strong className="text-2xl">{text.eth}</strong>
+              <span>{text.currently}:</span>
+              <strong className="text-2xl pl-1">{network.network}</strong>
             </div>
           </div>
         </div>

@@ -51,7 +51,9 @@ export const useLoadProvider = (): ILoadProvider => {
   }, []);
 
   useEffect((): void => {
-    if (!provider) loadProvider();
+    if (!provider) {
+      loadProvider();
+    }
   }, [loadProvider, provider]);
 
   return { provider, error, loadProvider, isLoading };

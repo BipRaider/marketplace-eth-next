@@ -10,19 +10,20 @@ type REQ_METHODS = 'eth_sendTransaction' | 'eth_requestAccounts';
 
 export interface MetaMaskEthereumProvider {
   isMetaMask?: boolean;
-  once(eventName: string | symbol, listener: (...args: any[]) => void): this;
-  on(eventName: MMEPon, listener: (...args: any[]) => void): this;
-  off(eventName: string | symbol, listener: (...args: any[]) => void): this;
-  addListener(eventName: string | symbol, listener: (...args: any[]) => void): this;
-  removeListener(eventName: string | symbol, listener: (...args: any[]) => void): this;
-  removeAllListeners(event?: string | symbol): this;
-  request?: (data: { method: REQ_METHODS; params?: Record<string, unknown> }) => any;
+  once(_eventName: string | symbol, _listener: (..._args: any[]) => void): this;
+  on(_eventName: MMEPon, _listener: (..._args: any[]) => void): this;
+  off(_eventName: string | symbol, _listener: (..._args: any[]) => void): this;
+  addListener(_eventName: string | symbol, _listener: (..._args: any[]) => void): this;
+  removeListener(_eventName: string | symbol, _listener: (..._args: any[]) => void): this;
+  removeAllListeners(_event?: string | symbol): this;
+  request?: (_data: { method: REQ_METHODS; params?: Record<string, unknown> }) => any;
   _metamask?: any;
   _jsonRpcConnection?: {
     events: {
+      removeListener: (_name: string, _fn: () => {}) => {};
       on: (
-        eve: 'notification',
-        fn: (payload: {
+        _eve: 'notification',
+        _fn: (_payload: {
           method: payloadJRpcCEon;
           params: {
             chainId: string;

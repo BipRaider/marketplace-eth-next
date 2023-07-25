@@ -1,9 +1,9 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 
 function useDebounce<T>(value: T, delay: number): T {
   // State and setters for debounced value
-  const [debouncedValue, setDebouncedValue] = React.useState<T>(value);
-  React.useEffect(
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+  useEffect(
     () => {
       // Update debounced value after delay
       const handler = setTimeout(() => {
@@ -16,7 +16,7 @@ function useDebounce<T>(value: T, delay: number): T {
         clearTimeout(handler);
       };
     },
-    [value, delay] // Only re-call effect if value or delay changes
+    [value, delay], // Only re-call effect if value or delay changes
   );
   return debouncedValue;
 }

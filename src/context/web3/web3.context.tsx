@@ -35,27 +35,33 @@ export const Web3ContextProvider = ({ children }: PropsWithChildren<IWeb3Context
   const web3 = useLoadWeb3(provider);
   const contract = useLoadContract(provider);
   const account = useAccount(web3, provider);
-  const balance = useBallance(web3, account.address);
+  const balance = useBallance(web3);
   const network = useNetwork(web3);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect((): void => {
-    if (!provider.isLoading && !web3.isLoading) setIsLoading(false);
-    else setIsLoading(true);
+    if (!provider.isLoading && !web3.isLoading) {
+      if (isLoading) setIsLoading(false);
+    } else if (!isLoading) setIsLoading(true);
   }, [provider.isLoading, web3.isLoading]);
 
+  // If changed is chainId. Should get a new network.
   useEffect((): void => {
     if (!account.isLoading) network.getNetwork();
-  }, [account.isLoading, network]);
+  }, [account.chainId]);
 
+  // If changed the address or the network. Should get a new balance from the wallet.
   useEffect((): void => {
-    if (account.address) balance.getBalance();
-  }, [account.address, balance]);
+    if (account.address) {
+      balance.setAccount(account.address);
+      balance.getBalance();
+    }
+  }, [account.address, network.network]);
 
   const memoValue = useMemo((): IWeb3Context => {
     return { isLoading, web3, provider, contract, account, balance, network };
-  }, [isLoading, provider, contract, web3, account, balance, network]);
+  }, [isLoading, web3, provider, contract, account, balance, network]);
 
   return <Web3Context.Provider value={memoValue}>{children}</Web3Context.Provider>;
 };

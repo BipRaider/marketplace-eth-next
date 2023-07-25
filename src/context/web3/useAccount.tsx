@@ -20,14 +20,16 @@ export interface IAccount {
   addresses: null | string[];
   /*** Address that use now.*/
   address: null | string;
-  /*** The network use now.*/
+  /*** The network use now.
+   ** `TODO:` need delete it from here and move to the `useNetwork` hook.
+   */
   chainId: null | string;
   /*** If connection to `MetaMask` failed.*/
   error: string | null;
 }
 
 export const baseAccountContext: Readonly<IAccount> = {
-  isLoading: false,
+  isLoading: true,
   isAdmin: false,
   addresses: null,
   address: null,
@@ -53,23 +55,23 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
     setIsLoading(true);
     if (accs && accs.length > 0) {
       setAddresses(accs);
-      setAddress(accs[0]);
       setIsLoading(false);
       setIsAdmin(false);
-      if (accs[0] === adminAddresses[0]) setIsAdmin(true);
-      if (accs[0] === adminAddresses[1]) setIsAdmin(true);
+      if (address !== accs[0]) {
+        setAddress(accs[0]);
+        if (accs[0] === adminAddresses[0]) setIsAdmin(true);
+        if (accs[0] === adminAddresses[1]) setIsAdmin(true);
+      }
     }
   };
 
   /*** Get all account from `MetaMask` */
   const getAccounts = useCallback(async (): Promise<void> => {
-    setIsLoading(true);
     if (web3) {
       const accs = await web3.eth.getAccounts();
       setAcc(accs);
       const network = await web3.eth.getChainId();
       setChainId(network.toString());
-      setIsLoading(false);
     }
   }, [web3]);
 
@@ -82,14 +84,12 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
           setAcc(accs);
         }
       });
-      prov.on('chainChanged', async (_: '0x539' | '5777' | '0x5' | '0x1' | '0xe708' | '0x89') => {
-        if (!web3) return;
-        const network = await web3.eth.getChainId();
-        if (chainId !== network.toString())
-          setChainId(() => {
-            return network.toString();
-          });
+      prov.on('chainChanged', async (_chid: '0x539' | '5777' | '0x5' | '0x1' | '0xe708' | '0x89') => {
+        if (chainId !== parseInt(_chid, 16).toString()) {
+          setChainId(parseInt(_chid, 16).toString());
+        }
       });
+      // TODO: Have the problem with it. Making a lot of subscription
       prov._jsonRpcConnection?.events.on('notification', payload => {
         const { method, params } = payload;
         if (method === 'metamask_unlockStateChanged') {
@@ -103,7 +103,7 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
         }
       });
     },
-    [address],
+    [chainId, web3],
   );
 
   const connectMetaMask = useCallback(async (): Promise<void> => {
@@ -121,8 +121,8 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
   }, [getAccounts, web3]);
 
   useEffect(() => {
-    if (web3 && provider) setAccountListener(provider);
-  }, [web3, provider, setAccountListener]);
+    if (web3 && provider && isLoading) setAccountListener(provider);
+  }, [web3 && provider]);
 
   return {
     error,

@@ -57,7 +57,7 @@ export const Navbar: React.FC<NavBarProps> = ({ className, ...props }): React.JS
                 </Button>
               )}
 
-              {account.isLoading && !account.address && !provider.isLoading && (
+              {account.isLoading && !provider.isLoading && (
                 <Button onClick={account.connectMetaMask}>{text.connect}</Button>
               )}
               {provider.isLoading && web3.isLoading && (
