@@ -17,7 +17,7 @@ export const baseContractContext: Readonly<ILoadContract> = {
   error: null,
   isLoading: true,
   loadContract: function (): void {
-    throw new Error('Function not implemented.');
+    console.error('Function not implemented.');
   },
 };
 

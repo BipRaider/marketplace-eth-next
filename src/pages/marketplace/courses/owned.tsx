@@ -1,24 +1,33 @@
+import React from 'react';
+import { GetStaticProps } from 'next/types';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
-import { useAccount, useOwnedCourses } from '@components/hooks/web3';
-import { Button, Message } from '@components/ui/common';
-import { OwnedCourseCard } from '@components/ui/course';
-import { BaseLayout } from '@components/ui/layout';
-import { MarketHeader } from '@components/ui/marketplace';
-import { getAllCourses } from '@content/courses/fetcher';
-import { useWeb3 } from '@components/providers';
+import { useWeb3Context } from '@src/context';
+import { withLayout } from '@src/components/main';
+import { getAllCourses } from '@src/content/courses/fetcher';
+import { ICourses } from '@src/types';
+import { MarketHeader } from '@src/components/higher';
+import { Button, Message } from '@src/components/common';
 
-export default function OwnedCourses({ courses }) {
+interface Props extends Record<string, unknown> {
+  courses: ICourses[];
+}
+
+const OwnedCourses: React.FC<Props> = ({ courses }): React.JSX.Element => {
   const router = useRouter();
-  const { requireInstall } = useWeb3();
-  const { account } = useAccount();
-  const { ownedCourses } = useOwnedCourses(courses, account.data);
+  const {
+    //  requireInstall,
+    account,
+  } = useWeb3Context();
+
+  // const { ownedCourses } = useOwnedCourses(courses, account.address);
 
   return (
     <>
       <MarketHeader />
-      <section className="grid grid-cols-1">
+
+      {/* <section className="grid grid-cols-1">
         {ownedCourses.isEmpty && (
           <div className="w-1/2">
             <Message type="warning">
@@ -50,18 +59,18 @@ export default function OwnedCourses({ courses }) {
             <Button onClick={() => router.push(`/courses/${course.slug}`)}>Watch the course</Button>
           </OwnedCourseCard>
         ))}
-      </section>
+      </section> */}
     </>
   );
-}
+};
 
-export function getStaticProps() {
+export const getStaticProps: GetStaticProps<Props> = () => {
   const { data } = getAllCourses();
   return {
     props: {
       courses: data,
     },
   };
-}
+};
 
-OwnedCourses.Layout = BaseLayout;
+export default withLayout(OwnedCourses);

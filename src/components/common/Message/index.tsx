@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { MessageProps } from './props';
 
 const TYPES = {
   success: 'green',
@@ -12,12 +13,10 @@ const SIZES = {
   lg: 'text-lg',
 };
 
-export default function Message({ children, type = 'success', size = 'md' }) {
+export const Message: React.FC<MessageProps> = ({ children, type = 'success', size = 'md' }): React.JSX.Element => {
   const [isDisplayed, setIsDisplayed] = useState(true);
 
-  if (!isDisplayed) {
-    return null;
-  }
+  if (!isDisplayed) return <></>;
 
   const messageType = TYPES[type];
   const messageSizeClass = SIZES[size];
@@ -54,4 +53,4 @@ export default function Message({ children, type = 'success', size = 'md' }) {
       </div>
     </div>
   );
-}
+};

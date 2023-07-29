@@ -15,7 +15,7 @@ const text = {
 export const WalletBar: React.FC<WalletBarProps> = ({ className, ...props }): React.JSX.Element => {
   const { account, network } = useWeb3Context();
   return (
-    <section className={cn('text-white bg-indigo-600', className)} {...props}>
+    <section className={cn('text-white bg-indigo-600  rounded-lg', className)} {...props}>
       <div className="p-8">
         <h1 className="text-2xl">
           {text.hello}

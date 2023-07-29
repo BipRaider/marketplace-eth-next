@@ -3,7 +3,7 @@ import { GetStaticProps } from 'next/types';
 import { getAllCourses } from '@content/courses/fetcher';
 
 import { withLayout } from '@components/main';
-import { CoursesPage } from '@components/higher';
+import { BreadCrumbs, CoursesPage } from '@components/higher';
 import { ICourses } from '@src/types';
 
 interface Props extends Record<string, unknown> {
@@ -13,6 +13,7 @@ interface Props extends Record<string, unknown> {
 function Courses({ courses }: Props) {
   return (
     <>
+      <BreadCrumbs />
       <CoursesPage courses={courses} />
     </>
   );

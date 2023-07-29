@@ -66,7 +66,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/pages/courses/[slug].tsx",
-    "src/pages/admin.tsx"
+    "src/pages/admin.tsx",
+    "src/components/ui/common/loader/index.js"
   ],
   "exclude": [
     "node_modules",

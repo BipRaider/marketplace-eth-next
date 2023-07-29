@@ -36,10 +36,10 @@ export const baseAccountContext: Readonly<IAccount> = {
   chainId: null,
   error: null,
   getAccounts: function (): void {
-    throw new Error('getAccounts: Function not implemented.');
+    console.error('getAccounts: Function not implemented.');
   },
   connectMetaMask: function (): void {
-    throw new Error('connectMetaMask: Function not implemented.');
+    console.error('connectMetaMask: Function not implemented.');
   },
 };
 

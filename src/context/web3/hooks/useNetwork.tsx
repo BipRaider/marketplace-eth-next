@@ -30,7 +30,7 @@ export interface INetwork {
 
 export const baseNetworkContext: Readonly<INetwork> = {
   getNetwork: function (): void {
-    throw new Error('getNetwork: Function not implemented.');
+    console.error('getNetwork: Function not implemented.');
   },
   isLoading: false,
   error: null,

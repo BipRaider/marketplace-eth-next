@@ -6,6 +6,10 @@
   min-height: calc(100vh - 88px);
 }
 
+img {
+  min-height: 100% !important;
+}
+
 .next-image-wrapper > div {
   height: 100%;
 }

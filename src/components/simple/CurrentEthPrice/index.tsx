@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 import cn from 'classnames';
 
@@ -12,7 +13,15 @@ export const CurrentEthPrice: React.FC<CurrentEthPriceProps> = ({ data, classNam
   return (
     <div className={cn('flex flex-1 items-stretch text-center', className)}>
       <div className="p-10 border drop-shadow rounded-md">
-        <div>
+        <div className="flex flex-row items-center">
+          <Image
+            className="object-cover"
+            src={'/small-eth.webp'}
+            alt={'ether icon'}
+            width={35}
+            height={35}
+            layout="fixed"
+          />
           <span className="text-2xl font-bold">
             {text.eth} = {data}$
           </span>

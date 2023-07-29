@@ -1,46 +1,51 @@
 import React from 'react';
-
-import { CoursesPage, WalletBar } from '@src/components/higher';
-import { withLayout } from '@src/components/main';
 import { GetStaticProps } from 'next/types';
+
+import { CoursesPage, MarketHeader, OrderModal } from '@src/components/higher';
+import { withLayout } from '@src/components/main';
 import { getAllCourses } from '@src/content/courses/fetcher';
 import { ICourses } from '@src/types';
+import { useCoursesContext, useWeb3Context } from '@src/context';
 
 interface Props extends Record<string, unknown> {
   courses: ICourses[];
 }
 
 const Marketplace = ({ courses }: Props): React.JSX.Element => {
-  // const { web3, contract, requireInstall } = useWeb3();
-  // const { hasConnectedWallet, isConnecting, account } = useWalletInfo();
+  const {
+    web3: { web3 },
+    account,
+  } = useWeb3Context();
+
+  const { selectedCourse, isNewPurchase, busyCourseId, setBusyCourseId, setSelectedCourse, setIsNewPurchase } =
+    useCoursesContext();
+  // const { requireInstall } = useWeb3Context();
+  // const { hasConnectedWallet, isConnecting } = useWalletInfo();
   // const { ownedCourses } = useOwnedCourses(courses, account.data);
 
-  // const [selectedCourse, setSelectedCourse] = useState(null);
-  // const [busyCourseId, setBusyCourseId] = useState(null);
-  // const [isNewPurchase, setIsNewPurchase] = useState(true);
+  const purchaseCourse = async (order: { price: number; email: string }, course: ICourses) => {
+    if (!web3) return;
+    const hexCourseId = web3.utils.utf8ToHex(course.id);
+    const orderHash = web3.utils.soliditySha3(
+      { type: 'bytes16', value: hexCourseId },
+      { type: 'address', value: account.address },
+    );
 
-  // const purchaseCourse = async (order, course) => {
-  //   const hexCourseId = web3.utils.utf8ToHex(course.id);
-  //   const orderHash = web3.utils.soliditySha3(
-  //     { type: 'bytes16', value: hexCourseId },
-  //     { type: 'address', value: account.data },
-  //   );
+    const value = web3.utils.toWei(String(order.price), 'ether');
 
-  //   const value = web3.utils.toWei(String(order.price));
-
-  //   setBusyCourseId(course.id);
-  //   if (isNewPurchase) {
-  //     const emailHash = web3.utils.sha3(order.email);
-  //     const proof = web3.utils.soliditySha3(
-  //       { type: 'bytes32', value: emailHash },
-  //       { type: 'bytes32', value: orderHash },
-  //     );
-
-  //     withToast(_purchaseCourse({ hexCourseId, proof, value }, course));
-  //   } else {
-  //     withToast(_repurchaseCourse({ courseHash: orderHash, value }, course));
-  //   }
-  // };
+    setBusyCourseId(course.id);
+    if (isNewPurchase) {
+      const emailHash = web3.utils.sha3(order.email);
+      const proof = web3.utils.soliditySha3(
+        { type: 'bytes32', value: emailHash },
+        { type: 'bytes32', value: orderHash },
+      );
+      console.dir({ value, proof });
+      // withToast(_purchaseCourse({ hexCourseId, proof, value }, course));
+    } else {
+      // withToast(_repurchaseCourse({ courseHash: orderHash, value }, course));
+    }
+  };
 
   // const _purchaseCourse = async ({ hexCourseId, proof, value }, course) => {
   //   try {
@@ -84,15 +89,27 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
   //   }
   // };
 
-  // const cleanupModal = () => {
-  //   setSelectedCourse(null);
-  //   setIsNewPurchase(true);
-  // };
+  const cleanupModal = () => {
+    setSelectedCourse(null);
+    setIsNewPurchase(true);
+  };
 
   return (
     <>
-      <WalletBar />
-      <CoursesPage courses={courses} />
+      <MarketHeader />
+
+      <CoursesPage courses={courses} purchase={true} />
+      {selectedCourse && (
+        <OrderModal
+          course={selectedCourse}
+          isNewPurchase={isNewPurchase}
+          onSubmit={(formData, course) => {
+            purchaseCourse(formData, course);
+            cleanupModal();
+          }}
+          onClose={cleanupModal}
+        />
+      )}
       {/* <CourseList courses={courses}>
         {course => {
           const owned = ownedCourses.lookup[course.id];
@@ -189,18 +206,7 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
             />
           );
         }}
-      </CourseList>
-      {selectedCourse && (
-        <OrderModal
-          course={selectedCourse}
-          isNewPurchase={isNewPurchase}
-          onSubmit={(formData, course) => {
-            purchaseCourse(formData, course);
-            cleanupModal();
-          }}
-          onClose={cleanupModal}
-        />
-      )} */}
+      </CourseList> */}
     </>
   );
 };

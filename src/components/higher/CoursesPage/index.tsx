@@ -5,7 +5,12 @@ import { CoursesPageProps } from './props';
 import { CoursesList } from '@src/components/simple';
 import { useCoursesContext } from '@src/context';
 
-export const CoursesPage: React.FC<CoursesPageProps> = ({ className, courses, ...props }): React.JSX.Element => {
+export const CoursesPage: React.FC<CoursesPageProps> = ({
+  className,
+  courses,
+  purchase,
+  ...props
+}): React.JSX.Element => {
   const { setCourses, courses: coursesList } = useCoursesContext();
 
   const cb = useCallback(() => {
@@ -18,7 +23,7 @@ export const CoursesPage: React.FC<CoursesPageProps> = ({ className, courses, ..
 
   return (
     <section className={cn('grid grid-cols-1 mb-5', className)} {...props}>
-      <CoursesList courses={coursesList} />
+      <CoursesList courses={coursesList} purchase={purchase} />
     </section>
   );
 };

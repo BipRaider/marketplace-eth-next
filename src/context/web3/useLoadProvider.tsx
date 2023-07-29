@@ -12,15 +12,15 @@ export interface ILoadProvider {
   /*** State of loading to the provider.*/
   isLoading: boolean;
   /*** Reload provider.*/
-  loadProvider: () => Promise<void>;
+  loadProvider: () => void;
 }
 
 export const baseProviderContext: Readonly<ILoadProvider> = {
   provider: null,
   error: null,
   isLoading: true,
-  loadProvider: function (): Promise<void> {
-    throw new Error('loadProvider: Function not implemented.');
+  loadProvider: function (): void {
+    console.error('loadProvider: Function not implemented.');
   },
 };
 

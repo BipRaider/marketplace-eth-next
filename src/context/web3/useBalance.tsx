@@ -17,10 +17,10 @@ export const baseBalanceContext: Readonly<IBalance> = {
   account: null,
   isLoading: true,
   getBalance: function (): void {
-    throw new Error('getBalance: Function not implemented.');
+    console.error('getBalance: Function not implemented.');
   },
   setAccount: function (_value: SetStateAction<string | null>): void {
-    throw new Error('setAccount: Function not implemented.');
+    console.error('setAccount: Function not implemented.');
   },
 };
 

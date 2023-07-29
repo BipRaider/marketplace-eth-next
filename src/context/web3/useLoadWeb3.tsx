@@ -18,7 +18,7 @@ export const baseWeb3Context: Readonly<ILoadWeb3> = {
   error: null,
   isLoading: true,
   loadWeb3: function (): void {
-    throw new Error('Function not implemented.');
+    console.error('loadWeb3: Function not implemented.');
   },
 };
 
