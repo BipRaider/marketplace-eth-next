@@ -24,7 +24,7 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
   // const { hasConnectedWallet, isConnecting } = useWalletInfo();
   // const { ownedCourses } = useOwnedCourses(courses, account.data);
 
-  const purchaseCourse = async (order: { price: number; email: string }, course: ICourses) => {
+  const purchaseCourse = async (order: { price: number | string; email: string }, course: ICourses) => {
     if (!web3) return;
     const hexCourseId = web3.utils.utf8ToHex(course.id);
     const orderHash = web3.utils.soliditySha3(
@@ -50,7 +50,7 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
 
   // const _purchaseCourse = async ({ hexCourseId, proof, value }, course) => {
   //   try {
-  //     const result = await contract.methods.purchaseCourse(hexCourseId, proof).send({ from: account.data, value });
+  //     const result = await contract.methods.purchaseCourse(hexCourseId, proof).send({ from: account.address, value });
 
   //     ownedCourses.mutate([
   //       ...ownedCourses.data,
@@ -72,7 +72,7 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
 
   // const _repurchaseCourse = async ({ courseHash, value }, course) => {
   //   try {
-  //     const result = await contract.methods.repurchaseCourse(courseHash).send({ from: account.data, value });
+  //     const result = await contract.methods.repurchaseCourse(courseHash).send({ from: account.address, value });
 
   //     const index = ownedCourses.data.findIndex(c => c.id === course.id);
 

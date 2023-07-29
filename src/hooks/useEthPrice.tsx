@@ -22,8 +22,8 @@ export const useEthPrice = (): IUseEthPrice => {
   return { eth: { price: data ?? 0, ...rest } };
 };
 
-export const pricePerItem = (price: number = 0, pricePerItem: number = 0): string | null => {
-  if (!price) return null;
+export const pricePerItem = (price: number = 0, pricePerItem: number = 0): string => {
+  if (!price) return '0';
   const priceItem = pricePerItem / Number(price);
   return priceItem.toFixed(6);
 };

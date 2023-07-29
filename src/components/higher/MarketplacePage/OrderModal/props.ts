@@ -7,3 +7,14 @@ export interface OrderModalProps extends DetailedHTMLProps<HTMLAttributes<HTMLDi
   onSubmit: (..._data: any) => void;
   isNewPurchase: boolean;
 }
+
+export interface IOrder {
+  price: string | number;
+  email: string;
+  confirmationEmail: string;
+}
+
+export interface ICreateFormStateOrder {
+  isDisabled: boolean;
+  message: string;
+}

@@ -8,7 +8,7 @@ const SIZES = {
   lg: 'w-12 h-12',
 };
 
-const Loader: React.FC<LoaderProps> = ({ size = 'md' }): React.JSX.Element => {
+export const Loader: React.FC<LoaderProps> = ({ size = 'md' }): React.JSX.Element => {
   return (
     <div className={cn(`sk-fading-circle`, SIZES[size])}>
       {Array.from({ length: 12 }).map(
@@ -19,5 +19,3 @@ const Loader: React.FC<LoaderProps> = ({ size = 'md' }): React.JSX.Element => {
     </div>
   );
 };
-
-export default Loader;
