@@ -33,7 +33,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, purchase, onClic
         >
           {course.title}
         </Link>
-        <p className="mt-2 text-gray-500">{course.description}</p>
+        <p className="mt-2 text-gray-500">{course?.description?.substring(0, 70)}...</p>
         {purchase && (
           <div className="mt-4">
             <Button disabled={!dis} variant="lightPurple" onClick={e => onClickHandler(e, course)}>

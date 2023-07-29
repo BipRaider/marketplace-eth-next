@@ -4,10 +4,11 @@ import { ParsedUrlQuery } from 'querystring';
 import { GetStaticProps, GetStaticPropsContext, GetStaticPaths } from 'next/types';
 
 import { getAllCourses } from '@content/courses/fetcher';
+import { IAppContext, ICoursesContext, IEthContext, IWeb3Context } from '@src/context';
 import { withLayout } from '@components/main';
-import { KeyPoint, Lectures, Modal, HeroCourse } from '@components/higher';
+import { KeyPoint, Lectures, HeroCourse } from '@components/higher';
+import { Modal } from '@src/components/common';
 import { ICourses } from '@src/types';
-import { ICoursesContext } from '@src/context';
 
 interface Props extends Record<string, unknown> {
   course: ICourses;
@@ -57,7 +58,7 @@ function Course({ course }: Props) {
           </div>
         )} */}
         {/* <Curriculum isLoading={isLoading} locked={isLocked} courseState={courseState} /> */}
-        <Modal />
+        <Modal isOpen={false} />
       </>
     );
   } catch (error) {
@@ -66,7 +67,7 @@ function Course({ course }: Props) {
 
   // const courseState = "deactivated"
 }
-export default withLayout<Props & ICoursesContext>(Course, { eth: false });
+export default withLayout<Props & ICoursesContext & IAppContext & IWeb3Context & IEthContext>(Course, { eth: false });
 
 export const getStaticPaths: GetStaticPaths = () => {
   const { data } = getAllCourses();

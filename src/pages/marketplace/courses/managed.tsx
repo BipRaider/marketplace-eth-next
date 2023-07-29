@@ -7,6 +7,7 @@ import { useWeb3Context } from '@src/context';
 import { MarketHeader } from '@src/components/higher';
 import { withLayout } from '@src/components/main';
 import { Button } from '@src/components/common';
+import { OrderCard } from '@src/components/simple';
 
 interface Props extends Record<string, unknown> {}
 
@@ -44,9 +45,7 @@ const ManagedCourses: React.FC<Props> = (): React.JSX.Element => {
   // const { managedCourses } = useManagedCourses(account);
 
   // const verifyCourse = (email, { hash, proof }) => {
-  //   if (!email) {
-  //     return;
-  //   }
+  //   if (!email) return;
 
   //   const emailHash = web3.utils.sha3(email);
   //   const proofToCheck = web3.utils.soliditySha3(
@@ -67,10 +66,7 @@ const ManagedCourses: React.FC<Props> = (): React.JSX.Element => {
 
   // const changeCourseState = async (courseHash, method) => {
   //   try {
-  //     const result = await contract.methods[method](courseHash).send({
-  //       from: account.data,
-  //     });
-
+  //     const result = await contract.methods[method](courseHash).send({from: account.data});
   //     return result;
   //   } catch (e) {
   //     throw new Error(e.message);
@@ -154,8 +150,9 @@ const ManagedCourses: React.FC<Props> = (): React.JSX.Element => {
 
       {/* <CourseFilter onFilterSelect={value => setFilters({ state: value })} onSearchSubmit={searchCourse} /> */}
 
-      {/* <section className="grid grid-cols-1">
-        {searchedCourse && (
+      <section className="grid grid-cols-1">
+        <OrderCard>managed page</OrderCard>
+        {/* {searchedCourse && (
           <div>
             <h1 className="text-2xl font-bold p-5">Search</h1>
             {renderCard(searchedCourse, true)}
@@ -163,8 +160,8 @@ const ManagedCourses: React.FC<Props> = (): React.JSX.Element => {
         )}
         <h1 className="text-2xl font-bold p-5">All Courses</h1>
         {filteredCourses}
-        {filteredCourses?.length === 0 && <Message type="warning">No courses to display</Message>}
-      </section> */}
+        {filteredCourses?.length === 0 && <Message type="warning">No courses to display</Message>} */}
+      </section>
     </>
   );
 };

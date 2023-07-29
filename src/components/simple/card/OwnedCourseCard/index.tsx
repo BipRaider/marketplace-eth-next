@@ -1,4 +1,9 @@
-import Image from 'next/image';
+import React from 'react';
+import Img from 'next/image';
+
+import cn from 'classnames';
+
+import { OwnedCourseCardProps } from './props';
 
 const STATE_COLORS = {
   purchased: 'indigo',
@@ -6,15 +11,21 @@ const STATE_COLORS = {
   deactivated: 'red',
 };
 
-export default function OwnedCourseCard({ children, course }) {
+export const OwnedCourseCard: React.FC<OwnedCourseCardProps> = ({ course, children }): React.JSX.Element => {
   const stateColor = STATE_COLORS[course.state];
-
   return (
-    <div className="bg-white border shadow overflow-hidden sm:rounded-lg mb-3">
+    <div className={cn('bg-white border shadow overflow-hidden sm:rounded-lg mb-3')}>
       <div className="block sm:flex">
         <div className="flex-1">
           <div className="h-72 sm:h-full next-image-wrapper">
-            <Image className="object-cover" src={course.coverImage} width="45" height="45" layout="responsive" />
+            <Img
+              className="object-cover"
+              src={course.coverImage}
+              width="45"
+              height="45"
+              layout="responsive"
+              alt="image curse"
+            />
           </div>
         </div>
         <div className="flex-4">
@@ -45,4 +56,4 @@ export default function OwnedCourseCard({ children, course }) {
       </div>
     </div>
   );
-}
+};

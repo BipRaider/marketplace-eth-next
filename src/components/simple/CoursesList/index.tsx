@@ -3,7 +3,7 @@ import cn from 'classnames';
 
 import { CoursesListProps } from './props';
 
-import { CourseCard } from './CourseCard';
+import { CourseCard } from '../card/CourseCard';
 import { useCoursesContext } from '@src/context';
 import { ICourses } from '@src/types';
 

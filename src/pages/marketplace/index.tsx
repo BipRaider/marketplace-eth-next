@@ -15,6 +15,7 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
   const {
     web3: { web3 },
     account,
+    isLoading,
   } = useWeb3Context();
 
   const { selectedCourse, isNewPurchase, busyCourseId, setBusyCourseId, setSelectedCourse, setIsNewPurchase } =
@@ -120,7 +121,7 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
               state={owned?.state}
               disabled={!hasConnectedWallet}
               Footer={() => {
-                if (requireInstall) {
+                if (isLoading) {
                   return (
                     <Button size="sm" disabled={true} variant="lightPurple">
                       Install

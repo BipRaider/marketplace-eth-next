@@ -27,39 +27,41 @@ const OwnedCourses: React.FC<Props> = ({ courses }): React.JSX.Element => {
     <>
       <MarketHeader />
 
-      {/* <section className="grid grid-cols-1">
-        {ownedCourses.isEmpty && (
-          <div className="w-1/2">
-            <Message type="warning">
-              <div>You don&apos;t own any courses</div>
-              <Link href="/marketplace">
-                <a className="font-normal hover:underline">
-                  <i>Purchase Course</i>
-                </a>
-              </Link>
-            </Message>
-          </div>
-        )}
-        {account.isEmpty && (
-          <div className="w-1/2">
-            <Message type="warning">
-              <div>Please connect to Metamask</div>
-            </Message>
-          </div>
-        )}
-        {requireInstall && (
-          <div className="w-1/2">
-            <Message type="warning">
-              <div>Please install Metamask</div>
-            </Message>
-          </div>
-        )}
-        {ownedCourses.data?.map(course => (
-          <OwnedCourseCard key={course.id} course={course}>
-            <Button onClick={() => router.push(`/courses/${course.slug}`)}>Watch the course</Button>
-          </OwnedCourseCard>
+      <section className="grid grid-cols-1">
+        owned page
+        {/*  {ownedCourses.isEmpty && (
+        //   <div className="w-1/2">
+        //     <Message type="warning">
+        //       <div>You don&apos;t own any courses</div>
+        //       <Link href="/marketplace">
+        //         <a className="font-normal hover:underline">
+        //           <i>Purchase Course</i>
+        //         </a>
+        //       </Link>
+        //     </Message>
+        //   </div>
+        // )}
+        // {account.isEmpty && (
+        //   <div className="w-1/2">
+        //     <Message type="warning">
+        //       <div>Please connect to Metamask</div>
+        //     </Message>
+        //   </div>
+        // )}
+        // {requireInstall && (
+        //   <div className="w-1/2">
+        //     <Message type="warning">
+        //       <div>Please install Metamask</div>
+        //     </Message>
+        //   </div>
+        // )}
+        // {ownedCourses.data?.map(course => (
+        //   <OwnedCourseCard key={course.id} course={course}>
+        //     <Button onClick={() => router.push(`/courses/${course.slug}`)}>Watch the course</Button>
+        //   </OwnedCourseCard>
         ))}
-      </section> */}
+        */}
+      </section>
     </>
   );
 };
