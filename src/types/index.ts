@@ -1,3 +1,5 @@
+import { Contract } from 'web3';
+
 export interface ICourses {
   id: string;
   type: string;
@@ -10,3 +12,7 @@ export interface ICourses {
   wsl: string[];
   createdAt: string;
 }
+
+export type ContractNameList = 'CourseMarketplace';
+
+export type ContractBuilder = InstanceType<typeof Contract>;

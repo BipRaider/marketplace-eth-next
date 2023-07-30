@@ -1,40 +1,50 @@
-import Web3 from 'web3';
-import contract from '@truffle/contract';
+import Web3, { Contract } from 'web3';
+//@ts-ignore
+// import contract from '@truffle/contract';
 
 const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID;
 
-export const loadContract = async (name: string, web3: Web3) => {
+export type ContractNameList = 'CourseMarketplace';
+
+export type ContractBuilder = InstanceType<typeof Contract>;
+
+export const getContract = async (name: ContractNameList, web3: Web3): Promise<ContractBuilder | Error | null> => {
   const res = await fetch(`/contracts/${name}.json`);
   const Artifact = await res.json();
-  let contract = null;
+  let contract: ContractBuilder | null = null;
 
   try {
-    if (NETWORK_ID) contract = new web3.eth.Contract(Artifact.abi, Artifact.networks[NETWORK_ID].address);
+    if (!Artifact) return new Error(`Artifact not found.`);
+    if (!NETWORK_ID) return new Error(`Network id not found.`);
+
+    const address = Artifact.networks[NETWORK_ID]?.address;
+    if (!address) return new Error(`Address not found in the network.`);
+
+    contract = new web3.eth.Contract(Artifact.abi, address);
   } catch {
-    console.log(`Contract ${name} cannot be loaded`);
+    return new Error(`Contract ${name} cannot be loaded`);
   }
 
   return contract;
 };
 
-type ContractNameList = 'CourseMarketplace';
+// export const getContract_2 = async (name: ContractNameList, provider: any) => {
+//   const Artifact = require(`../../public/contracts/${name}.json`);
 
-export const loadContract_2 = async (name: ContractNameList, provider: any) => {
-  const Artifact = require(`../../build/contracts/${name}.json`);
+//   const _contract = contract(Artifact);
+//   _contract.setProvider(provider);
 
-  const _contract = contract(Artifact);
-  _contract.setProvider(provider);
+//   let deployedContract = null;
+//   try {
+//     deployedContract = await _contract.deployed();
+//   } catch {
+//     console.error('You are connected to the wrong network');
+//   }
 
-  let deployedContract = null;
-  try {
-    deployedContract = await _contract.deployed();
-  } catch {
-    console.error('You are connected to the wrong network');
-  }
+//   return deployedContract;
+// };
 
-  return deployedContract;
-};
-// export const loadContract = async (name, provider) => {
+// export const loadContract_3 = async (name, provider) => {
 //   const res = await fetch(`/contracts/${name}.json`)
 //   const Artifact = await res.json()
 

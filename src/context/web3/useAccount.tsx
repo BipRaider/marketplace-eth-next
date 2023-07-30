@@ -1,11 +1,15 @@
 // https://docs.metamask.io/wallet/reference/provider-api/
 import { useEffect, useState, useCallback } from 'react';
 
-import { MetaMaskEthereumProvider } from '@src/context/web3';
 import { ILoadWeb3 } from './useLoadWeb3';
 import { ILoadProvider } from './useLoadProvider';
+import { MetaMaskEthereumProvider } from './web3.interface';
 
-const adminAddresses = ['0x2cE8e88f515F4ECd98E490d10081963FD03A5665', '0x6DA4827AD94a60712b7AAe113092DFaD008ADd34'];
+const adminAddresses = [
+  '0x2cE8e88f515F4ECd98E490d10081963FD03A5665',
+  '0x6DA4827AD94a60712b7AAe113092DFaD008ADd34',
+  '0x23F95f073353D66542FDb928a0118Bfa4D0411a4',
+];
 
 export interface IAccount {
   /*** Get all account from `MetaMask`.*/
@@ -59,8 +63,9 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
       setIsAdmin(false);
       if (address !== accs[0]) {
         setAddress(accs[0]);
-        if (accs[0] === adminAddresses[0]) setIsAdmin(true);
-        if (accs[0] === adminAddresses[1]) setIsAdmin(true);
+        for (const adminAddress of adminAddresses) {
+          if (accs[0] === adminAddress) setIsAdmin(true);
+        }
       }
     }
   };

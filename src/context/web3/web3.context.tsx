@@ -33,7 +33,7 @@ export const Web3Context = createContext<IWeb3Context>({
 export const Web3ContextProvider = ({ children }: PropsWithChildren<IWeb3Context>): React.JSX.Element => {
   const provider = useLoadProvider();
   const web3 = useLoadWeb3(provider);
-  const contract = useLoadContract(provider);
+  const contract = useLoadContract(web3, provider);
   const account = useAccount(web3, provider);
   const balance = useBallance(web3);
   const network = useNetwork(web3);
