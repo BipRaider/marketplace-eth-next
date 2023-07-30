@@ -8,7 +8,7 @@ export const CurrentPrice = (): React.JSX.Element => {
 
   return (
     <section className="grid grid-cols-4 my-5">
-      <CurrentEthPrice data={ethPriceUSD} />
+      <CurrentEthPrice price={ethPriceUSD} />
       <PricePerItem price={ethPriceUSD} priceItem={15}>
         Price per course
       </PricePerItem>

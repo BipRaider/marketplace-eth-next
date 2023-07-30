@@ -1,8 +1,12 @@
+import useSWR from 'swr';
+import Web3 from 'web3';
+
 import { createCourseHash } from '@utils/hash';
 import { normalizeOwnedCourse } from '@utils/normalize';
-import useSWR from 'swr';
 
-export const handler = (web3, contract) => (course, account) => {
+import { ICourses } from '@src/types';
+
+export const useOwnedCourse = (web3: Web3 | null, contract: any) => (course: ICourses, account: string | null) => {
   const swrRes = useSWR(
     () => (web3 && contract && account ? `web3/ownedCourse/${account}` : null),
     async () => {

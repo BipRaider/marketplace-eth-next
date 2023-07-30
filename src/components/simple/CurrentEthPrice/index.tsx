@@ -9,7 +9,7 @@ const text = {
   current_eth_price: 'Current eth Price',
 };
 
-export const CurrentEthPrice: React.FC<CurrentEthPriceProps> = ({ data, className }) => {
+export const CurrentEthPrice: React.FC<CurrentEthPriceProps> = ({ price, className }) => {
   return (
     <div className={cn('flex flex-1 items-stretch text-center', className)}>
       <div className="p-10 border drop-shadow rounded-md">
@@ -23,7 +23,7 @@ export const CurrentEthPrice: React.FC<CurrentEthPriceProps> = ({ data, classNam
             layout="fixed"
           />
           <span className="text-2xl font-bold">
-            {text.eth} = {data}$
+            {text.eth} = {price}$
           </span>
         </div>
         <p className="text-xl text-gray-500">{text.current_eth_price}</p>

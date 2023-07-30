@@ -8,6 +8,7 @@ export interface IEthContext {
 export const EthContext = createContext<IEthContext>({
   ethPriceUSD: 0,
 });
+
 export const useEthContext = (): IEthContext => useContext(EthContext);
 
 export const EthContextProvider = ({ children }: PropsWithChildren<IEthContext>): React.JSX.Element => {

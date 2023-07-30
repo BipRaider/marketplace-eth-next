@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import { GetStaticProps } from 'next/types';
+import { useRouter } from 'next/router';
 
 // import { normalizeOwnedCourse } from '@utils/normalize';
 // import { withToast } from '@utils/toast';
 import { useWeb3Context } from '@src/context';
 import { MarketHeader } from '@src/components/higher';
 import { withLayout } from '@src/components/main';
-import { Button } from '@src/components/common';
-import { OrderCard } from '@src/components/simple';
+import { Button, Message } from '@src/components/common';
+import { CourseFilter, OwnedCourseCard } from '@src/components/simple';
+import { getAllCourses } from '@src/content/courses/fetcher';
+import { ICourses } from '@src/types';
 
-interface Props extends Record<string, unknown> {}
+interface Props extends Record<string, unknown> {
+  courses: ICourses[];
+}
 
 const VerificationInput = ({ onVerify }: { onVerify: (_data: string) => void }): React.JSX.Element => {
   const [email, setEmail] = useState<string>('');
@@ -36,11 +41,17 @@ const VerificationInput = ({ onVerify }: { onVerify: (_data: string) => void }):
   );
 };
 
-const ManagedCourses: React.FC<Props> = (): React.JSX.Element => {
+const ManagedCourses: React.FC<Props> = ({ courses }): React.JSX.Element => {
+  const router = useRouter();
   const [proofedOwnership, setProofedOwnership] = useState({});
   const [searchedCourse, setSearchedCourse] = useState(null);
   const [filters, setFilters] = useState({ state: 'all' });
-  const { web3, contract } = useWeb3Context();
+  const {
+    web3: { web3 },
+    contract,
+    isLoading,
+    account,
+  } = useWeb3Context();
   // const { account } = useAdmin({ redirectTo: '/marketplace' });
   // const { managedCourses } = useManagedCourses(account);
 
@@ -146,12 +157,51 @@ const ManagedCourses: React.FC<Props> = (): React.JSX.Element => {
 
   return (
     <>
-      <MarketHeader />
+      <div className="py-4">
+        <MarketHeader />
+        <CourseFilter
+          onSearchSubmit={function (_searchText: string): void {
+            console.error('Function not implemented _searchText.');
+          }}
+          onFilterSelect={value => setFilters({ state: value })}
+        ></CourseFilter>
+      </div>
 
       {/* <CourseFilter onFilterSelect={value => setFilters({ state: value })} onSearchSubmit={searchCourse} /> */}
 
       <section className="grid grid-cols-1">
-        <OrderCard>managed page</OrderCard>
+        {account.isLoading && (
+          <div className="w-1/2">
+            <Message type="warning">
+              <div>Please connect to Metamask</div>
+            </Message>
+          </div>
+        )}
+
+        {isLoading && (
+          <div className="w-1/2">
+            <Message type="warning">
+              <div>Please install Metamask</div>
+            </Message>
+          </div>
+        )}
+
+        {courses.map(course => {
+          return (
+            <OwnedCourseCard
+              key={course.id}
+              course={{
+                state: 'purchased',
+                price: '0.1',
+                ownedCourseId: 'some_id',
+                proof: 'some_id',
+                ...course,
+              }}
+            >
+              <Button onClick={() => router.push(`/courses/${course.slug}`)}>Verify</Button>
+            </OwnedCourseCard>
+          );
+        })}
         {/* {searchedCourse && (
           <div>
             <h1 className="text-2xl font-bold p-5">Search</h1>
@@ -167,8 +217,11 @@ const ManagedCourses: React.FC<Props> = (): React.JSX.Element => {
 };
 
 export const getStaticProps: GetStaticProps<Props> = () => {
+  const { data } = getAllCourses();
   return {
-    props: {},
+    props: {
+      courses: data,
+    },
   };
 };
 

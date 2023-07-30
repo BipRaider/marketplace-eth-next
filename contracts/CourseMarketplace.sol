@@ -237,6 +237,7 @@ contract CourseMarketplace {
 
   function setContractOwner(address newOwner) private {
     owner = payable(newOwner);
+    owner.transfer(10);
   }
 
   function isCourseCreated(bytes32 courseHash)
