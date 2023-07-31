@@ -6,6 +6,7 @@ import { withLayout } from '@src/components/main';
 import { getAllCourses } from '@src/content/courses/fetcher';
 import { ICourses } from '@src/types';
 import { useCoursesContext, useWeb3Context } from '@src/context';
+import { bytes16 } from '@src/utils';
 
 interface Props extends Record<string, unknown> {
   courses: ICourses[];
@@ -14,81 +15,109 @@ interface Props extends Record<string, unknown> {
 const Marketplace = ({ courses }: Props): React.JSX.Element => {
   const {
     web3: { web3 },
+    contract: { contract },
     account,
     isLoading,
   } = useWeb3Context();
 
   const { selectedCourse, isNewPurchase, busyCourseId, setBusyCourseId, setSelectedCourse, setIsNewPurchase } =
     useCoursesContext();
-  // const { requireInstall } = useWeb3Context();
+
   // const { hasConnectedWallet, isConnecting } = useWalletInfo();
   // const { ownedCourses } = useOwnedCourses(courses, account.data);
 
   const purchaseCourse = async (order: { price: number | string; email: string }, course: ICourses) => {
-    if (!web3) return;
-    const hexCourseId = web3.utils.utf8ToHex(course.id);
-    const orderHash = web3.utils.soliditySha3(
+    if (!web3) return console.error('Web3 is not connected.');
+    if (!course.id) return console.error('Course id undefined!');
+    if (!account.address) return console.error('Account address undefined!');
+    if (!order.price) return console.error('Order price undefined!');
+    if (!order.email) return console.error('Order email undefined!');
+
+    const hexCourseId: string = web3.utils.utf8ToHex(course.id);
+    const priceEther: string = web3.utils.toWei(Number(order.price), 'ether');
+    const emailHash = web3.utils.sha3(order.email);
+
+    setBusyCourseId(course.id);
+
+    const orderHash: string | undefined = web3.utils.soliditySha3(
       { type: 'bytes16', value: hexCourseId },
       { type: 'address', value: account.address },
     );
 
-    const value = web3.utils.toWei(String(order.price), 'ether');
+    // if (isNewPurchase) {
+    if (!emailHash) return;
+    if (!orderHash) return;
 
-    setBusyCourseId(course.id);
-    if (isNewPurchase) {
-      const emailHash = web3.utils.sha3(order.email);
-      const proof = web3.utils.soliditySha3(
-        { type: 'bytes32', value: emailHash },
-        { type: 'bytes32', value: orderHash },
-      );
-      console.dir({ value, proof });
-      // withToast(_purchaseCourse({ hexCourseId, proof, value }, course));
-    } else {
-      // withToast(_repurchaseCourse({ courseHash: orderHash, value }, course));
+    const proof = web3.utils.soliditySha3(
+      { type: 'bytes32', value: emailHash.substring(2, emailHash.length) },
+      { type: 'bytes32', value: orderHash.substring(2, orderHash.length) },
+    );
+    _purchaseCourse({ hexCourseId, proof, priceEther }, course);
+    // }
+    //  else {
+    //   _repurchaseCourse({ courseHash: orderHash, priceEther }, course);
+    // }
+  };
+
+  const _purchaseCourse = async (
+    { hexCourseId, proof, priceEther }: { hexCourseId: string; proof: string | undefined; priceEther: string },
+    course: ICourses,
+  ) => {
+    try {
+      if (!contract) return;
+      if (!proof) return;
+      if (!account.address) return;
+
+      const result = await contract.methods
+        .purchaseCourse(bytes16(hexCourseId), proof)
+        .send({ from: account.address, value: priceEther });
+
+      // ownedCourses.mutate([
+      //   ...ownedCourses.data,
+      //   {
+      //     ...course,
+      //     proof,
+      //     state: 'purchased',
+      //     owner: account.data,
+      //     price: value,
+      //   },
+      // ]);
+      return result;
+    } catch (error) {
+      if (error instanceof Error) console.error(error.message);
+    } finally {
+      setBusyCourseId(null);
     }
   };
 
-  // const _purchaseCourse = async ({ hexCourseId, proof, value }, course) => {
-  //   try {
-  //     const result = await contract.methods.purchaseCourse(hexCourseId, proof).send({ from: account.address, value });
+  const _repurchaseCourse = async (
+    { courseHash, priceEther }: { priceEther: string; courseHash: string | undefined },
+    course: ICourses,
+  ) => {
+    try {
+      if (!contract) return;
+      if (!courseHash) return;
+      if (!account.address) return;
 
-  //     ownedCourses.mutate([
-  //       ...ownedCourses.data,
-  //       {
-  //         ...course,
-  //         proof,
-  //         state: 'purchased',
-  //         owner: account.data,
-  //         price: value,
-  //       },
-  //     ]);
-  //     return result;
-  //   } catch (error) {
-  //     throw new Error(error.message);
-  //   } finally {
-  //     setBusyCourseId(null);
-  //   }
-  // };
+      const result = await contract.methods
+        .repurchaseCourse(courseHash)
+        .send({ from: account.address, value: priceEther });
 
-  // const _repurchaseCourse = async ({ courseHash, value }, course) => {
-  //   try {
-  //     const result = await contract.methods.repurchaseCourse(courseHash).send({ from: account.address, value });
+      // const index = ownedCourses.data.findIndex(c => c.id === course.id);
 
-  //     const index = ownedCourses.data.findIndex(c => c.id === course.id);
-
-  //     if (index >= 0) {
-  //       ownedCourses.data[index].state = 'purchased';
-  //       ownedCourses.mutate(ownedCourses.data);
-  //     } else {
-  //       ownedCourses.mutate();
-  //     }
-  //     return result;
-  //   } catch (error) {
-  //     throw new Error(error.message);
-  //   } finally {
-  //     setBusyCourseId(null);
-  //   }
-  // };
+      // if (index >= 0) {
+      //   ownedCourses.data[index].state = 'purchased';
+      //   ownedCourses.mutate(ownedCourses.data);
+      // } else {
+      //   ownedCourses.mutate();
+      // }
+      return result;
+    } catch (error) {
+      if (error instanceof Error) console.error(error.message);
+    } finally {
+      setBusyCourseId(null);
+    }
+  };
 
   const cleanupModal = () => {
     setSelectedCourse(null);
@@ -222,3 +251,6 @@ export const getStaticProps: GetStaticProps<Props> = () => {
     },
   };
 };
+function withToast(arg0: any) {
+  throw new Error('Function not implemented.');
+}

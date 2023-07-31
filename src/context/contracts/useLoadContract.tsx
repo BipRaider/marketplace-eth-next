@@ -17,7 +17,7 @@ export const baseContractContext: Readonly<ILoadContract> = {
   contractName: null,
 };
 
-const getContract = async (name: ContractNameList, web3: Web3): Promise<ContractBuilder | Error> => {
+const getContract = async (name: ContractNameList, web3: Web3): Promise<ILoadContract['contract'] | Error> => {
   const res = await fetch(`/contracts/${name}.json`);
   const Artifact = await res.json();
   if (!Artifact) return new Error(`Artifact not found.`);
@@ -25,7 +25,7 @@ const getContract = async (name: ContractNameList, web3: Web3): Promise<Contract
   try {
     const address = Artifact.networks[NETWORK_ID]?.address;
     if (!address) return new Error(`Address not found in the network.`);
-    return new web3.eth.Contract(Artifact.abi, address);
+    return new web3.eth.Contract(Artifact.abi, address) as ILoadContract['contract'];
   } catch {
     return new Error(`Contract ${name} cannot be loaded`);
   }
@@ -33,7 +33,7 @@ const getContract = async (name: ContractNameList, web3: Web3): Promise<Contract
 
 /*** Get contract.*/
 export const useLoadContract = ({ web3, ...web3Params }: ILoadWeb3, _provider: ILoadProvider): ILoadContract => {
-  const [contract, setContract] = useState<ContractBuilder | null>(null);
+  const [contract, setContract] = useState<ILoadContract['contract']>(null);
   const [error, setError] = useState<string | null>(null);
   const [contractName, setContractName] = useState<ContractNameList | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);

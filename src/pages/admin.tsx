@@ -1,4 +1,6 @@
-import { Button } from '@src/components/common';
+import React from 'react';
+
+import { Button, Indicator } from '@src/components/common';
 import { withLayout } from '@src/components/main';
 import { useWeb3Context, useAppContext, useEthContext } from '@src/context';
 
@@ -21,11 +23,7 @@ const Admin = () => {
           <ul>
             <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
               Loading:
-              {appContext.isLoading ? (
-                <span className="text-red-600">Loading...</span>
-              ) : (
-                <span className="text-lime-600">ok</span>
-              )}
+              {appContext.isLoading ? <Indicator loading /> : <Indicator greenIcon />}
             </li>
           </ul>
         </div>
@@ -35,11 +33,7 @@ const Admin = () => {
           <div className="px-2 border-b border-cyan-500">
             <div className="grid gap-4" style={{ gridTemplateColumns: '120px 1fr' }}>
               Loading Web3:
-              {web3Context.isLoading ? (
-                <span className="text-red-600">Loading...</span>
-              ) : (
-                <span className="text-lime-600">ok</span>
-              )}
+              {web3Context.isLoading ? <Indicator loading /> : <Indicator greenIcon />}
             </div>
           </div>
           <div className="px-2 border-b border-cyan-500">
@@ -49,34 +43,32 @@ const Admin = () => {
             <ul>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
                 <span className="">Loading:</span>
-                {web3Context.provider.isLoading ? (
-                  <span className="text-red-600">Loading...</span>
-                ) : (
-                  <span className="text-lime-600">ok</span>
-                )}
+                {web3Context.provider.isLoading ? <Indicator loading /> : <Indicator greenIcon />}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
                 Error:
                 {web3Context.provider.error ? (
-                  <span className="text-red-600">{web3Context.provider.error}</span>
+                  <Indicator text color={'red'}>
+                    {web3Context.provider.error}
+                  </Indicator>
                 ) : (
-                  <span className="text-lime-600">{`${web3Context.provider.error}`}</span>
+                  <Indicator greenIcon />
                 )}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
                 Provider:
-                {web3Context.provider.provider ? (
-                  <span className="text-lime-600">Found</span>
-                ) : (
-                  <span className="text-red-600">{'Not found'}</span>
-                )}
+                {web3Context.provider.provider ? <Indicator greenIcon /> : <Indicator redIcon />}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
                 Name:
                 {web3Context.provider.provider && web3Context.provider.provider.isMetaMask ? (
-                  <span className="text-lime-600">{'MetaMask'}</span>
+                  <Indicator text color={'green'}>
+                    MetaMask
+                  </Indicator>
                 ) : (
-                  <span className="text-red-600">{'unknown'}</span>
+                  <Indicator text color={'red'}>
+                    unknown
+                  </Indicator>
                 )}
               </li>
             </ul>
@@ -88,27 +80,21 @@ const Admin = () => {
             <ul>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
                 Loading:
-                {web3Context.web3.isLoading ? (
-                  <span className="text-red-600">Loading...</span>
-                ) : (
-                  <span className="text-lime-600">ok</span>
-                )}
+                {web3Context.web3.isLoading ? <Indicator loading /> : <Indicator greenIcon />}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
                 Error:
                 {web3Context.web3.error ? (
-                  <span className="text-red-600">{web3Context.web3.error}</span>
+                  <Indicator text color={'red'}>
+                    {web3Context.web3.error}
+                  </Indicator>
                 ) : (
-                  <span className="text-lime-600">{`${web3Context.web3.error}`}</span>
+                  <Indicator greenIcon />
                 )}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
                 Provider:
-                {web3Context.web3.web3 ? (
-                  <span className="text-lime-600">Found</span>
-                ) : (
-                  <span className="text-red-600">{'Not found'}</span>
-                )}
+                {web3Context.web3.web3 ? <Indicator greenIcon /> : <Indicator redIcon />}
               </li>
             </ul>
           </div>
@@ -119,27 +105,21 @@ const Admin = () => {
             <ul>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
                 Loading:
-                {web3Context.contract.isLoading ? (
-                  <span className="text-red-600">Loading...</span>
-                ) : (
-                  <span className="text-lime-600">ok</span>
-                )}
+                {web3Context.contract.isLoading ? <Indicator loading /> : <Indicator greenIcon />}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
                 Error:
                 {web3Context.contract.error ? (
-                  <span className="text-red-600">{web3Context.contract.error}</span>
+                  <Indicator text color={'red'}>
+                    {web3Context.contract.error}
+                  </Indicator>
                 ) : (
-                  <span className="text-lime-600">{`${web3Context.contract.error}`}</span>
+                  <Indicator greenIcon />
                 )}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
                 Provider:
-                {web3Context.contract.contract ? (
-                  <span className="text-lime-600">Found</span>
-                ) : (
-                  <span className="text-red-600">{'Not found'}</span>
-                )}
+                {web3Context.contract.contract ? <Indicator greenIcon /> : <Indicator redIcon />}
               </li>
             </ul>
           </div>
@@ -153,42 +133,36 @@ const Admin = () => {
             <ul>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
                 Loading:
-                {web3Context.account.isLoading ? (
-                  <span className="text-red-600">Loading...</span>
-                ) : (
-                  <span className="text-lime-600">ok</span>
-                )}
+                {web3Context.account.isLoading ? <Indicator loading /> : <Indicator greenIcon />}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
                 Error:
                 {web3Context.provider.error ? (
-                  <span className="text-red-600">{web3Context.account.error}</span>
+                  <Indicator text color={'red'}>
+                    {web3Context.account.error}
+                  </Indicator>
                 ) : (
-                  <span className="text-lime-600">{`${web3Context.account.error}`}</span>
+                  <Indicator greenIcon />
                 )}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
                 Admin:
-                {web3Context.account.isAdmin ? (
-                  <span className="text-lime-600">{`${web3Context.account.isAdmin}`}</span>
-                ) : (
-                  <span className="text-red-600">{`${web3Context.account.isAdmin}`}</span>
-                )}
+                {web3Context.account.isAdmin ? <Indicator greenIcon /> : <Indicator redIcon />}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
                 Network:
                 {web3Context.account.chainId ? (
-                  <span className="text-lime-600">{`${web3Context.account.chainId}`}</span>
+                  <Indicator text color={'green'}>{`${web3Context.account.chainId}`}</Indicator>
                 ) : (
-                  <span className="text-red-600">{`${web3Context.account.chainId}`}</span>
+                  <Indicator text color={'red'}>{`${web3Context.account.chainId}`}</Indicator>
                 )}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
                 Address use:
                 {web3Context.account.address ? (
-                  <span className="text-lime-600">{`${web3Context.account.address}`}</span>
+                  <Indicator text color={'green'}>{`${web3Context.account.address}`}</Indicator>
                 ) : (
-                  <span className="text-red-600">{`${web3Context.account.address}`}</span>
+                  <Indicator text color={'red'}>{`${web3Context.account.address}`}</Indicator>
                 )}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
@@ -198,7 +172,7 @@ const Admin = () => {
                     web3Context.account.addresses.map(address => {
                       return (
                         <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }} key={address}>
-                          <span className="text-lime-600">{`${address}`}</span>
+                          <Indicator text className="text-emerald-700">{`${address}`}</Indicator>
                         </li>
                       );
                     })}
@@ -214,42 +188,36 @@ const Admin = () => {
             <ul>
               <li className="grid gap-4" style={{ gridTemplateColumns: '120px 1fr' }}>
                 Loading:
-                {web3Context.network.isLoading ? (
-                  <span className="text-red-600">Loading...</span>
-                ) : (
-                  <span className="text-lime-600">ok</span>
-                )}
+                {web3Context.network.isLoading ? <Indicator loading /> : <Indicator greenIcon />}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '120px 1fr' }}>
                 Error:
                 {web3Context.network.error ? (
-                  <span className="text-red-600">{web3Context.network.error}</span>
+                  <Indicator text color={'red'}>
+                    {web3Context.network.error}
+                  </Indicator>
                 ) : (
-                  <span className="text-lime-600">{`${web3Context.network.error}`}</span>
+                  <Indicator greenIcon />
                 )}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '120px 1fr' }}>
                 Is support:
-                {web3Context.network.isSupported ? (
-                  <span className="text-lime-600">{`${web3Context.network.isSupported}`}</span>
-                ) : (
-                  <span className="text-red-600">{`${web3Context.network.isSupported}`}</span>
-                )}
+                {web3Context.network.isSupported ? <Indicator greenIcon /> : <Indicator redIcon />}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '120px 1fr' }}>
                 Network now:
                 {web3Context.network.network ? (
-                  <span className="text-lime-600">{`${web3Context.network.network}`}</span>
+                  <Indicator text color={'green'}>{`${web3Context.network.network}`}</Indicator>
                 ) : (
-                  <span className="text-red-600">{`${web3Context.network.network}`}</span>
+                  <Indicator text color={'red'}>{`${web3Context.network.network}`}</Indicator>
                 )}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '120px 1fr' }}>
                 Network target:
                 {web3Context.network.target ? (
-                  <span className="text-lime-600">{`${web3Context.network.target}`}</span>
+                  <Indicator text color={'green'}>{`${web3Context.network.target}`}</Indicator>
                 ) : (
-                  <span className="text-red-600">{`${web3Context.network.target}`}</span>
+                  <Indicator text color={'red'}>{`${web3Context.network.target}`}</Indicator>
                 )}
               </li>
             </ul>
@@ -262,34 +230,34 @@ const Admin = () => {
             <ul>
               <li className="grid gap-4" style={{ gridTemplateColumns: '120px 1fr' }}>
                 Loading:
-                {web3Context.balance.isLoading ? (
-                  <span className="text-red-600">Loading...</span>
-                ) : (
-                  <span className="text-lime-600">ok</span>
-                )}
+                {web3Context.balance.isLoading ? <Indicator loading /> : <Indicator greenIcon />}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '120px 1fr' }}>
                 Error:
                 {web3Context.balance.error ? (
-                  <span className="text-red-600">{web3Context.balance.error}</span>
+                  <Indicator text color={'red'}>
+                    {web3Context.balance.error}
+                  </Indicator>
                 ) : (
-                  <span className="text-lime-600">{`${web3Context.balance.error}`}</span>
+                  <Indicator greenIcon />
                 )}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '120px 1fr' }}>
                 Address:
                 {!web3Context.balance.account ? (
-                  <span className="text-red-600">not found</span>
+                  <Indicator redIcon />
                 ) : (
-                  <span className="text-lime-600">{web3Context.balance.account}</span>
+                  <Indicator text color={'green'}>
+                    {web3Context.balance.account}
+                  </Indicator>
                 )}
               </li>
               <li className="grid gap-4" style={{ gridTemplateColumns: '120px 1fr' }}>
                 Balance:
                 {web3Context.balance.balance ? (
-                  <span className="text-lime-600">{`${web3Context.balance.balance}`}</span>
+                  <Indicator text color={'green'}>{`${web3Context.balance.balance}`}</Indicator>
                 ) : (
-                  <span className="text-red-600">{`${web3Context.balance.balance}`}</span>
+                  <Indicator text color={'red'}>{`${web3Context.balance.balance}`}</Indicator>
                 )}
               </li>
             </ul>
@@ -302,9 +270,9 @@ const Admin = () => {
             <li className="grid gap-4" style={{ gridTemplateColumns: '100px 1fr' }}>
               USD:
               {ethContext.ethPriceUSD ? (
-                <span className="text-lime-600">{`${ethContext.ethPriceUSD}`}</span>
+                <Indicator text color={'green'}>{`${ethContext.ethPriceUSD}`}</Indicator>
               ) : (
-                <span className="text-red-600">{`not found`}</span>
+                <Indicator redIcon />
               )}
             </li>
           </ul>

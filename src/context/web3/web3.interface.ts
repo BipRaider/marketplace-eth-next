@@ -1,6 +1,18 @@
 import { ReactNode } from 'react';
 import Web3, { SupportedProviders, EthExecutionAPI } from 'web3';
 
+// import {
+//   AccessListResult,
+//   TransactionReceipt,
+//   NonPayableCallOptions,
+//   PayableCallOptions,
+//   DataFormat,
+//   DEFAULT_RETURN_FORMAT,
+//   FormatType,
+//   AbiFragment,
+
+// } from 'web3-types';
+
 type payloadJRpcCEon = 'metamask_unlockStateChanged' | 'metamask_chainChanged' | 'metamask_accountsChanged';
 type MMEPon = 'accountsChanged' | 'chainChanged';
 // https://ethereum.org/ru/developers/docs/apis/json-rpc/

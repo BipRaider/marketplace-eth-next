@@ -20,7 +20,7 @@ export const emailFormat = (value: string) => {
   return value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ? `Invalid email address` : undefined;
 };
 
-export const isOver18 = (dateOfBirth: Date) => {
+export const isOver18 = (dateOfBirth: Date):boolean => {
   const date18YrsAgo = new Date();
   date18YrsAgo.setFullYear(date18YrsAgo.getFullYear() - 18);
   // check if the date of birth is before that date

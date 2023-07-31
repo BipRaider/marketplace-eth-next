@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useWeb3Context } from '@src/context';
 import { withLayout } from '@src/components/main';
 import { getAllCourses } from '@src/content/courses/fetcher';
-import { ICourses } from '@src/types';
+import { ICourses, IOwnerCurse } from '@src/types';
 import { MarketHeader } from '@src/components/higher';
 import { Button, Message } from '@src/components/common';
 import { CourseFilter, OwnedCourseCard } from '@src/components/simple';
@@ -20,13 +20,12 @@ const OwnedCourses: React.FC<Props> = ({ courses }): React.JSX.Element => {
   const router = useRouter();
   const {
     web3: { web3 },
-    contract,
+    contract: { contract },
     isLoading,
-    //  requireInstall,
     account,
   } = useWeb3Context();
 
-  const ownedCourses = useOwnedCourses(web3, contract.contract)(courses, account.address);
+  const ownedCourses = useOwnedCourses(web3, contract)(courses, account.address);
 
   return (
     <>
@@ -59,28 +58,44 @@ const OwnedCourses: React.FC<Props> = ({ courses }): React.JSX.Element => {
           </div>
         )}
 
-        {ownedCourses && ownedCourses?.isLoading && (
+        {ownedCourses && ownedCourses.isLoading && (
           <div className="w-1/2">
             <Message type="warning">
               <div>You don&apos;t own any courses</div>
               <Link href="/marketplace">
-                <a className="font-normal hover:underline">
-                  <i>Purchase Course</i>
-                </a>
+                <i>Purchase Course</i>
               </Link>
             </Message>
           </div>
         )}
 
         {courses.map(course => {
+          let owner: Omit<Required<IOwnerCurse>, 'id'> = {
+            state: "deactivated",
+            ownedCourseId: '',
+            proof: '',
+            owner: '',
+            price: '',
+          };
+          if (ownedCourses.data) {
+            for (const owned of ownedCourses.data) {
+              if (course.id === owned.id) {
+                if (owned.ownedCourseId) owner.ownedCourseId = owned.ownedCourseId;
+                owner.price = owned.price;
+                owner.proof = owned.proof;
+                owner.owner = owned.owner;
+                owner.state = owned.state;
+              }
+            }
+          }
           return (
             <OwnedCourseCard
               key={course.id}
               course={{
-                state: 'purchased',
-                price: '0.1',
-                ownedCourseId: 'some_id',
-                proof: 'some_id',
+                state: owner.state,
+                price: owner.price,
+                ownedCourseId: owner.ownedCourseId,
+                proof: owner.proof,
                 ...course,
               }}
             >

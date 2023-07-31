@@ -13,6 +13,7 @@ const STATE_COLORS = {
 
 export const OwnedCourseCard: React.FC<OwnedCourseCardProps> = ({ course, children }): React.JSX.Element => {
   const stateColor = STATE_COLORS[course.state];
+
   return (
     <div className={cn('bg-white border shadow overflow-hidden sm:rounded-lg mb-3')}>
       <div className="block sm:flex">

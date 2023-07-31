@@ -1,6 +1,6 @@
-/** @type {import('next').NextConfig} */
 const { PrismaPlugin } = require('@prisma/nextjs-monorepo-workaround-plugin');
 
+/** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
   images: {

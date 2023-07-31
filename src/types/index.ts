@@ -13,6 +13,15 @@ export interface ICourses {
   createdAt: string;
 }
 
+export interface IOwnerCurse {
+  id: string;
+  ownedCourseId?: string;
+  proof: string;
+  owner: string;
+  price: string | number;
+  state: 'purchased' | 'activated' | 'deactivated';
+}
+
 export type ContractNameList = 'CourseMarketplace';
 
 export type ContractBuilder = InstanceType<typeof Contract>;
