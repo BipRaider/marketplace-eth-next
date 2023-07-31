@@ -64,11 +64,18 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
       if (address !== accs[0]) {
         setAddress(accs[0]);
         for (const adminAddress of adminAddresses) {
-          if (accs[0] === adminAddress) setIsAdmin(true);
+          if (accs[0] === adminAddress) setIsAdmin(() => true);
         }
       }
     }
   };
+
+  const checkAdmin = useCallback(
+    (addr: string): void => {
+      if (addr) for (const adminAddress of adminAddresses) if (addr === adminAddress) setIsAdmin(() => true);
+    },
+    [address, isAdmin],
+  );
 
   /*** Get all account from `MetaMask` */
   const getAccounts = useCallback(async (): Promise<void> => {
@@ -120,6 +127,10 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
       setError('Cannot retrieve account!');
     }
   }, [provider]);
+
+  useEffect(() => {
+    if (address && !isAdmin) checkAdmin(address);
+  }, [address, isAdmin]);
 
   useEffect(() => {
     if (web3) getAccounts();

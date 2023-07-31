@@ -1,8 +1,6 @@
 import { ReactNode } from 'react';
 import Web3, { SupportedProviders, EthExecutionAPI } from 'web3';
 
-import { setupHooks } from '@src/hooks/providers/web3/hooks/setupHooks';
-
 type payloadJRpcCEon = 'metamask_unlockStateChanged' | 'metamask_chainChanged' | 'metamask_accountsChanged';
 type MMEPon = 'accountsChanged' | 'chainChanged';
 // https://ethereum.org/ru/developers/docs/apis/json-rpc/
@@ -56,15 +54,6 @@ export interface IWeb3Api {
   contract: IContractFaucet | null;
 }
 
-export interface IWeb3Context_1 extends IWeb3Api {
-  hooks?: ReturnType<typeof setupHooks>;
-  connect: () => any;
-  isLoading: boolean;
-  requireInstall: boolean;
-}
-
 export interface Web3ProviderProps {
   children: ReactNode;
 }
-
-export type CD = (data: ReturnType<typeof setupHooks>) => any;

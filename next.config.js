@@ -20,18 +20,20 @@ module.exports = {
   },
 
   // webpack5: true,
-  webpack: config => {
+  webpack: (config, { isServer }) => {
     config.plugins = [...config.plugins, new PrismaPlugin()];
-    config.resolve.fallback = {
-      fs: false,
-      net: false,
-      dns: false,
-      child_process: false,
-      tls: false,
-      path: false,
-      stream: false,
-      constants: false,
-    };
+    if (!isServer) {
+      config.resolve.fallback = {
+        fs: false,
+        net: false,
+        dns: false,
+        child_process: false,
+        tls: false,
+        path: false,
+        stream: false,
+        constants: false,
+      };
+    }
 
     return config;
   },

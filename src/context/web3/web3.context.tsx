@@ -1,9 +1,9 @@
 // https://docs.metamask.io/wallet/tutorials/react-dapp-global-state/
 import React, { createContext, useContext, useEffect, useState, useMemo, PropsWithChildren } from 'react';
 
+import { ILoadContract, baseContractContext, useLoadContract } from '../contracts';
 import { ILoadProvider, baseProviderContext, useLoadProvider } from './useLoadProvider';
 import { useLoadWeb3, ILoadWeb3, baseWeb3Context } from './useLoadWeb3';
-import { ILoadContract, baseContractContext, useLoadContract } from './useLoadContract';
 import { IAccount, baseAccountContext, useAccount } from './useAccount';
 import { useBallance, baseBalanceContext, IBalance } from './useBalance';
 import { INetwork, baseNetworkContext, useNetwork } from './hooks';
@@ -41,9 +41,8 @@ export const Web3ContextProvider = ({ children }: PropsWithChildren<IWeb3Context
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect((): void => {
-    if (!provider.isLoading && !web3.isLoading) {
-      if (isLoading) setIsLoading(false);
-    } else if (!isLoading) setIsLoading(true);
+    if (provider.isLoading || web3.isLoading) setIsLoading(true);
+    if (!provider.isLoading && !web3.isLoading) setIsLoading(false);
   }, [provider.isLoading, web3.isLoading]);
 
   // If changed is chainId. Should get a new network.

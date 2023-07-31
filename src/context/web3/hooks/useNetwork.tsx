@@ -25,7 +25,7 @@ export interface INetwork {
   /*** Supported the network the app. */
   isSupported: boolean;
   /*** the network name */
-  network: string;
+  network: string | null | undefined;
 }
 
 export const baseNetworkContext: Readonly<INetwork> = {
@@ -40,7 +40,7 @@ export const baseNetworkContext: Readonly<INetwork> = {
 };
 
 export const useNetwork = ({ web3 }: ILoadWeb3): INetwork => {
-  const [network, setNetwork] = useState<any>(null);
+  const [network, setNetwork] = useState<string | null | undefined>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 

@@ -29,8 +29,8 @@ export const useLoadWeb3 = ({ provider }: ILoadProvider): ILoadWeb3 => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const loadWeb3 = useCallback((): void => {
+    setIsLoading(true);
     if (provider) {
-      setIsLoading(true);
       try {
         const initWeb3 = new Web3(provider as any);
         setWeb3(initWeb3);
