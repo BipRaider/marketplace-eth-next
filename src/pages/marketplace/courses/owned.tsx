@@ -71,7 +71,7 @@ const OwnedCourses: React.FC<Props> = ({ courses }): React.JSX.Element => {
 
         {courses.map(course => {
           let owner: Omit<Required<IOwnerCurse>, 'id'> = {
-            state: "deactivated",
+            state: 'deactivated',
             ownedCourseId: '',
             proof: '',
             owner: '',
@@ -89,16 +89,7 @@ const OwnedCourses: React.FC<Props> = ({ courses }): React.JSX.Element => {
             }
           }
           return (
-            <OwnedCourseCard
-              key={course.id}
-              course={{
-                state: owner.state,
-                price: owner.price,
-                ownedCourseId: owner.ownedCourseId,
-                proof: owner.proof,
-                ...course,
-              }}
-            >
+            <OwnedCourseCard key={course.id} course={{ ...course, ...owner }}>
               <Button onClick={() => router.push(`/courses/${course.slug}`)}>Watch the course</Button>
             </OwnedCourseCard>
           );

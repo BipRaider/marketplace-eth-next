@@ -13,9 +13,7 @@ export const useOwnedCourse = (web3: Web3 | null, contract: any) => (course: ICo
       const courseHash = createCourseHash(web3)(course.id, account);
       const ownedCourse = await contract.methods.getCourseByHash(courseHash).call();
 
-      if (ownedCourse.owner === '0x0000000000000000000000000000000000000000') {
-        return null;
-      }
+      if (ownedCourse.owner === '0x0000000000000000000000000000000000000000') return null;
 
       return normalizeOwnedCourse(web3)(course, ownedCourse);
     },

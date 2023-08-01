@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, PropsWithChildren } from 'react';
 
 import { ContractsContext } from './contract.context';
-import { ContractBuilder, ContractNameList, IContractsContext } from './contracts.interface';
+import { ContractNameList, IContractsContext, ContractBuilderMarketplace } from './contracts.interface';
 
 import { useLoadContract } from './useLoadContract';
 import { useLoadWeb3 } from '../web3/useLoadWeb3';
@@ -12,7 +12,7 @@ export const ContractsContextProvider = ({ children }: PropsWithChildren<IContra
   const web3 = useLoadWeb3(provider);
   const contract = useLoadContract(web3, provider);
 
-  const [contracts, setContracts] = useState<Map<ContractNameList, ContractBuilder>>(new Map());
+  const [contracts, setContracts] = useState<Map<ContractNameList, ContractBuilderMarketplace>>(new Map());
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {

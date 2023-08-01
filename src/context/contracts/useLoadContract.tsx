@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 
 import { ILoadProvider } from '../web3/useLoadProvider';
 import { ILoadWeb3 } from '../web3/useLoadWeb3';
-import { ContractBuilder, ContractNameList, ILoadContract } from './contracts.interface';
+import { ContractNameList, ILoadContract } from './contracts.interface';
 
 const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID;
 

@@ -4,7 +4,7 @@ import Web3 from 'web3';
 import { createCourseHash } from '@utils/hash';
 import { normalizeOwnedCourse } from '@utils/normalize';
 
-import { ICourses, IOwnerCurse } from '@src/types';
+import { ICourses, INormalizeOwnedCourse, IOwnerCurse } from '@src/types';
 import { ILoadContract } from '@src/context';
 
 export const useOwnedCourses =
@@ -12,7 +12,7 @@ export const useOwnedCourses =
     const swrRes = useSWR(
       () => (web3 && contract && account ? `web3/ownedCourses/${account}` : null),
       async () => {
-        const ownedCourses: (ICourses & IOwnerCurse)[] = [];
+        const ownedCourses: INormalizeOwnedCourse[] = [];
         if (!contract) return;
         for (let i = 0; i < courses.length; i++) {
           const course = courses[i];

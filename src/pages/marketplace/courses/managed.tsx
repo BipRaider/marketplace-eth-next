@@ -208,16 +208,7 @@ const ManagedCourses: React.FC<Props> = ({ courses }): React.JSX.Element => {
             }
           }
           return (
-            <OwnedCourseCard
-              key={course.id}
-              course={{
-                state: owner.state,
-                price: owner.price,
-                ownedCourseId: owner.ownedCourseId,
-                proof: owner.proof,
-                ...course,
-              }}
-            >
+            <OwnedCourseCard key={course.id} course={{ ...course, ...owner }}>
               <Button onClick={() => router.push(`/courses/${course.slug}`)}>Verify</Button>
             </OwnedCourseCard>
           );

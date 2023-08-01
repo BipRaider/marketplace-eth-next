@@ -1,6 +1,7 @@
 import { Contract } from 'web3';
 import { PayableMethodObject, NonPayableMethodObject } from 'web3-eth-contract';
 export type ContractNameList = 'CourseMarketplace';
+
 export type ContractBuilder = InstanceType<typeof Contract>;
 
 export interface ICourseMarketplaceContract {
@@ -20,9 +21,11 @@ export interface ICourseMarketplaceContract {
   };
 }
 
+export type ContractBuilderMarketplace = ContractBuilder & ICourseMarketplaceContract;
+
 export interface ILoadContract {
   /*** The contract */
-  contract: (ContractBuilder & ICourseMarketplaceContract) | null;
+  contract: ContractBuilderMarketplace | null;
   /*** The contract name */
   contractName: ContractNameList | null;
   /*** Error contract.*/
@@ -37,5 +40,5 @@ export interface IContractsContext {
   /*** State of loading if all dependence is loaded.*/
   isLoading: boolean;
   contract: ILoadContract;
-  contracts: Map<ContractNameList, ContractBuilder & ICourseMarketplaceContract>;
+  contracts: Map<ContractNameList, ContractBuilderMarketplace>;
 }

@@ -11,6 +11,7 @@ export interface ICourses {
   slug: string;
   wsl: string[];
   createdAt: string;
+  hash?: string;
 }
 
 export interface IOwnerCurse {
@@ -21,6 +22,8 @@ export interface IOwnerCurse {
   price: string | number;
   state: 'purchased' | 'activated' | 'deactivated';
 }
+
+export type INormalizeOwnedCourse = IOwnerCurse & Partial<ICourses>;
 
 export type ContractNameList = 'CourseMarketplace';
 
