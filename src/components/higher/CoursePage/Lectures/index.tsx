@@ -3,18 +3,20 @@ import cn from 'classnames';
 
 import { LecturesProps } from './props';
 import { Lecture } from './Lecture';
-
-const lectures = [
-  'How to init App',
-  'How to get a help',
-  'Introduction to Solidity',
-  'Programing in C++',
-  'How to write For Loops',
-  'Safe operator',
-];
+import { Loader } from '@src/components/common';
 
 // Curriculum
-export const Lectures: React.FC<LecturesProps> = ({ className, ...props }): React.JSX.Element => {
+export const Lectures: React.FC<LecturesProps> = ({
+  className,
+  course,
+  isLoading,
+  courseState,
+  ...props
+}): React.JSX.Element => {
+  const isLocked = !courseState || courseState === 'purchased' || courseState === 'deactivated';
+
+  if (!courseState) return <Loader />;
+
   return (
     <section className={cn('max-w-5xl mx-auto', className)} {...props}>
       <div className="flex flex-col">
@@ -42,8 +44,14 @@ export const Lectures: React.FC<LecturesProps> = ({ className, ...props }): Reac
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {lectures.map(lec => (
-                    <Lecture key={lec} lecture={lec} locked={true} />
+                  {course?.wsl.map(lec => (
+                    <Lecture
+                      key={lec}
+                      lecture={lec}
+                      isLoading={isLoading}
+                      locked={isLocked}
+                      courseState={courseState}
+                    />
                   ))}
                 </tbody>
               </table>

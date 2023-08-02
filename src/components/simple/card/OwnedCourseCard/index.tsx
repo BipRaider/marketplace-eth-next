@@ -14,6 +14,7 @@ const STATE_COLORS = {
 export const OwnedCourseCard: React.FC<OwnedCourseCardProps> = ({ course, children }): React.JSX.Element => {
   const stateColor = STATE_COLORS[course.state];
 
+  if (!course.ownedCourseId) return <></>;
   return (
     <div className={cn('bg-white border shadow overflow-hidden sm:rounded-lg mb-3')}>
       <div className="block sm:flex">
@@ -33,7 +34,7 @@ export const OwnedCourseCard: React.FC<OwnedCourseCardProps> = ({ course, childr
           <div className="px-4 py-5 sm:px-6">
             <h3 className="text-lg leading-6 font-medium text-gray-900">
               <span className="mr-2">{course.title}</span>
-              <span className={`text-xs text-${stateColor}-700 bg-${stateColor}-200 rounded-full p-2`}>
+              <span className={`text-xs text-${stateColor}-800 bg-${stateColor}-500  rounded-full p-2`}>
                 {course.state}
               </span>
             </h3>
@@ -42,13 +43,13 @@ export const OwnedCourseCard: React.FC<OwnedCourseCardProps> = ({ course, childr
 
           <div className="border-t border-gray-200">
             <dl>
-              <div className="bg-gray-50 px-4 py-5  sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Course ID</dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{course.ownedCourseId}</dd>
+              <div className="bg-gray-50 px-4 py-5 sm:px-6 sm:grid sm:grid-cols-12 sm:gap-4">
+                <dt className="text-sm font-medium text-gray-500 sm:col-span-1">Course ID</dt>
+                <dd className="mt-1 text-sm text-gray-900 sm:mt-0  sm:col-span-10 ">{course.ownedCourseId}</dd>
               </div>
-              <div className="bg-white px-4 py-5 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500">Proof</dt>
-                <dd className="mt-1 text-sm break-words text-gray-900 sm:mt-0 sm:col-span-2">{course.proof}</dd>
+              <div className="bg-white px-4 py-5 sm:px-6 sm:grid sm:grid-cols-12 sm:gap-4">
+                <dt className="text-sm font-medium text-gray-500 sm:col-span-1">Proof</dt>
+                <dd className="mt-1 text-sm break-words text-gray-900 sm:mt-0 sm:col-span-10">{course.proof}</dd>
               </div>
               <div className="bg-white px-4 py-5 sm:px-6">{children}</div>
             </dl>

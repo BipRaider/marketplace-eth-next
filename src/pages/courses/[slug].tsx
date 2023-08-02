@@ -1,43 +1,41 @@
-// import { useAccount, useOwnedCourse } from '@components/hooks/web3';
-// import { useWeb3 } from '@components/providers';
+import React from 'react';
 import { ParsedUrlQuery } from 'querystring';
 import { GetStaticProps, GetStaticPropsContext, GetStaticPaths } from 'next/types';
 
 import { getAllCourses } from '@content/courses/fetcher';
-import { IAppContext, ICoursesContext, IEthContext, IWeb3Context } from '@src/context';
+import { IAppContext, ICoursesContext, IEthContext, IWeb3Context, useWeb3Context } from '@src/context';
 import { withLayout } from '@components/main';
 import { KeyPoint, Lectures, HeroCourse } from '@components/higher';
-import { Modal } from '@src/components/common';
+import { Loader, Message, Modal } from '@src/components/common';
 import { ICourses } from '@src/types';
+import { useOwnedCourse } from '@src/hooks';
 
 interface Props extends Record<string, unknown> {
   course: ICourses;
   ethPriceUSD: number;
 }
 
-function Course({ course }: Props) {
+const Course = ({ course }: Props): React.JSX.Element => {
   try {
-    // const { isLoading } = useWeb3();
+    const {
+      web3: { web3 },
+      contract: { contract },
+      account,
+    } = useWeb3Context();
 
-    // const { account } = useAccount();
-    // const { ownedCourse } = useOwnedCourse(course, account.data);
-    // const courseState = ownedCourse.data?.state;
+    const ownedCourse = useOwnedCourse(web3, contract)(course, account.address);
+    const courseState = ownedCourse.data?.state;
 
-    // const isLocked = !courseState || courseState === 'purchased' || courseState === 'deactivated';
+    if (!course) return <Loader />;
 
     return (
       <>
         <div className="py-4">
-          <HeroCourse
-            // hasOwner={!!ownedCourse.data}
-            title={course.title}
-            description={course.description}
-            image={course.coverImage}
-          />
+          <HeroCourse title={course.title} description={course.description} image={course.coverImage} />
         </div>
         <KeyPoint points={course.wsl} />
-        <Lectures />
-        {/* {courseState && (
+
+        {courseState && (
           <div className="max-w-5xl mx-auto">
             {courseState === 'purchased' && (
               <Message type="warning">
@@ -56,8 +54,10 @@ function Course({ course }: Props) {
               </Message>
             )}
           </div>
-        )} */}
-        {/* <Curriculum isLoading={isLoading} locked={isLocked} courseState={courseState} /> */}
+        )}
+
+        <Lectures course={course} courseState={courseState} isLoading={ownedCourse.isLoading} />
+
         <Modal isOpen={false} />
       </>
     );
@@ -66,8 +66,8 @@ function Course({ course }: Props) {
   }
 
   // const courseState = "deactivated"
-}
-export default withLayout<Props & ICoursesContext & IAppContext & IWeb3Context & IEthContext>(Course, { eth: false });
+};
+export default withLayout<Props & ICoursesContext & IAppContext & IWeb3Context & IEthContext>(Course);
 
 export const getStaticPaths: GetStaticPaths = () => {
   const { data } = getAllCourses();

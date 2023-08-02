@@ -3,8 +3,15 @@ import Link from 'next/link';
 import cn from 'classnames';
 
 import { LectureProps } from './props';
+import { Loader } from '@src/components/common';
 
-export const Lecture: React.FC<LectureProps> = ({ className, locked, lecture }): React.JSX.Element => {
+export const Lecture: React.FC<LectureProps> = ({
+  className,
+  locked,
+  lecture,
+  isLoading,
+  courseState,
+}): React.JSX.Element => {
   return (
     <tr className={cn(className)}>
       <td className="px-6 py-4 whitespace-nowrap">
@@ -25,9 +32,26 @@ export const Lecture: React.FC<LectureProps> = ({ className, locked, lecture }):
         </span>
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-        <Link href="#" className="text-indigo-600 hover:text-indigo-900">
-          {locked ? 'Get Access' : 'Play'}
-        </Link>
+        {isLoading ? (
+          <Loader />
+        ) : locked ? (
+          <>
+            {courseState === 'deactivated' && (
+              <Link href="/marketplace" className="text-indigo-600 hover:text-indigo-900">
+                Get Access
+              </Link>
+            )}
+            {courseState === 'purchased' && (
+              <Link href="/faq" className="text-yellow-500 hover:text-yellow-900">
+                Waiting for activation...
+              </Link>
+            )}
+          </>
+        ) : (
+          <Link href="/watch" className="text-indigo-600 hover:text-indigo-900">
+            Watch
+          </Link>
+        )}
       </td>
     </tr>
   );

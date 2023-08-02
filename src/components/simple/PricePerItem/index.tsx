@@ -16,14 +16,7 @@ export const PricePerItem: React.FC<PricePerItemProps> = ({ price, priceItem, cl
     <div className={cn('flex flex-1 items-stretch text-center', className)}>
       <div className="p-10 border drop-shadow rounded-md">
         <div className="flex flex-row items-center">
-          <Image
-            className="object-cover"
-            src={'/small-eth.webp'}
-            alt={'ether icon'}
-            width={35}
-            height={35}
-            layout="fixed"
-          />
+          <Image className="object-cover" src={'/small-eth.webp'} alt={'ether icon'} width={35} height={35} priority />
           <span className="text-2xl font-bold">
             {pricePerCourse} {text.eth}
           </span>
