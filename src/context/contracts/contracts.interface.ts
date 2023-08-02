@@ -16,7 +16,7 @@ export interface ICourseMarketplaceContract {
     resumeContract: () => NonPayableMethodObject;
     transferOwnership: () => NonPayableMethodObject;
     getCourseCount: () => NonPayableMethodObject;
-    getCourseHashAtIndex: (_index: string) => NonPayableMethodObject;
+    getCourseHashAtIndex: (_index: string | number) => NonPayableMethodObject;
     getCourseByHash: (_courseHash: string) => NonPayableMethodObject;
   };
 }

@@ -17,8 +17,12 @@ export const useOwnedCourses =
         for (let i = 0; i < courses.length; i++) {
           const course = courses[i];
           if (!course.id) continue;
+
           const courseHash = createCourseHash(web3)(course.id, account);
-          const ownedCourse: any = await contract.methods.getCourseByHash(courseHash).call();
+
+          if (!courseHash) continue;
+
+          const ownedCourse: IOwnerCurse = await contract.methods.getCourseByHash(courseHash).call();
           if (ownedCourse?.owner !== '0x0000000000000000000000000000000000000000') {
             const normalized = normalizeOwnedCourse(web3)(course, ownedCourse);
             if (normalized) ownedCourses.push(normalized);

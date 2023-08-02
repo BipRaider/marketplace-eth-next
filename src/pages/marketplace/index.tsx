@@ -52,6 +52,7 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
       { type: 'bytes32', value: emailHash.substring(2, emailHash.length) },
       { type: 'bytes32', value: orderHash.substring(2, orderHash.length) },
     );
+
     _purchaseCourse({ hexCourseId, proof, priceEther }, course);
     // }
     //  else {

@@ -23,10 +23,11 @@ export const OwnedCourseCard: React.FC<OwnedCourseCardProps> = ({ course, childr
             <Img
               className="object-cover"
               src={course.coverImage}
-              width="45"
-              height="45"
-              layout="responsive"
+              width="300"
+              height="360"
+              loading="lazy"
               alt="image curse"
+              // priority
             />
           </div>
         </div>

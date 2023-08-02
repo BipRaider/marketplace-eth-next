@@ -11,6 +11,7 @@ import { MarketHeader } from '@src/components/higher';
 import { Button, Message } from '@src/components/common';
 import { CourseFilter, OwnedCourseCard } from '@src/components/simple';
 import { useOwnedCourses } from '@src/hooks';
+import { isEmpty } from '@src/utils';
 
 interface Props extends Record<string, unknown> {
   courses: ICourses[];
@@ -58,7 +59,7 @@ const OwnedCourses: React.FC<Props> = ({ courses }): React.JSX.Element => {
           </div>
         )}
 
-        {ownedCourses && ownedCourses.isLoading && (
+        {isEmpty(ownedCourses.data) && (
           <div className="w-1/2">
             <Message type="warning">
               <div>You don&apos;t own any courses</div>
