@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { GetStaticProps } from 'next/types';
-import { useRouter } from 'next/router';
 
-// import { normalizeOwnedCourse } from '@utils/normalize';
-// import { withToast } from '@utils/toast';
 import { useWeb3Context } from '@src/context';
 import { MarketHeader } from '@src/components/higher';
 import { withLayout } from '@src/components/main';
 import { Button, Message } from '@src/components/common';
-import { CourseFilter, OwnedCourseCard } from '@src/components/simple';
+import { CourseFilter, ManagedCard } from '@src/components/simple';
 import { getAllCourses } from '@src/content/courses/fetcher';
-import { ICourses, IOwnerCurse } from '@src/types';
-import { useOwnedCourses } from '@src/hooks';
+import { ICourses, INormalizeOwnedCourse, IOwnerCurse } from '@src/types';
+import { useManagedCourses } from '@src/hooks';
+import { normalizeOwnedCourse } from '@src/utils';
 
 interface Props extends Record<string, unknown> {
   courses: ICourses[];
@@ -42,10 +40,9 @@ const VerificationInput = ({ onVerify }: { onVerify: (_data: string) => void }):
   );
 };
 
-const ManagedCourses: React.FC<Props> = ({ courses }): React.JSX.Element => {
-  const router = useRouter();
+const ManagedCourses: React.FC<Props> = (): React.JSX.Element => {
   const [proofedOwnership, setProofedOwnership] = useState({});
-  const [searchedCourse, setSearchedCourse] = useState(null);
+  const [searchedCourse, setSearchedCourse] = useState<INormalizeOwnedCourse | null>(null);
   const [filters, setFilters] = useState({ state: 'all' });
 
   const {
@@ -54,122 +51,125 @@ const ManagedCourses: React.FC<Props> = ({ courses }): React.JSX.Element => {
     isLoading,
     account,
   } = useWeb3Context();
-  // const { account } = useAdmin({ redirectTo: '/marketplace' });
-  // const { managedCourses } = useManagedCourses(account);
 
-  // const verifyCourse = (email, { hash, proof }) => {
-  //   if (!email) return;
+  const managedCourses = useManagedCourses(web3, contract)(account);
 
-  //   const emailHash = web3.utils.sha3(email);
-  //   const proofToCheck = web3.utils.soliditySha3(
-  //     { type: 'bytes32', value: emailHash },
-  //     { type: 'bytes32', value: hash },
-  //   );
+  const verifyCourse = (email: string, { hash, proof }: { hash?: string; proof: string }) => {
+    if (!email) return;
+    if (!web3) return;
+    if (!hash) return;
 
-  //   proofToCheck === proof
-  //     ? setProofedOwnership({
-  //         ...proofedOwnership,
-  //         [hash]: true,
-  //       })
-  //     : setProofedOwnership({
-  //         ...proofedOwnership,
-  //         [hash]: false,
-  //       });
-  // };
+    const emailHash = web3.utils.sha3(email);
+    const proofToCheck = web3.utils.soliditySha3(
+      { type: 'bytes32', value: emailHash },
+      { type: 'bytes32', value: hash },
+    );
 
-  // const changeCourseState = async (courseHash, method) => {
-  //   try {
-  //     const result = await contract.methods[method](courseHash).send({from: account.data});
-  //     return result;
-  //   } catch (e) {
-  //     throw new Error(e.message);
-  //   }
-  // };
+    proofToCheck === proof
+      ? setProofedOwnership({ ...proofedOwnership, [hash]: true })
+      : setProofedOwnership({ ...proofedOwnership, [hash]: false });
+  };
 
-  // const activateCourse = async courseHash => {
-  //   withToast(changeCourseState(courseHash, 'activateCourse'));
-  // };
+  const changeCourseState = async (courseHash: string, method: 'activateCourse' | 'deactivateCourse') => {
+    try {
+      if (!contract) return;
+      if (!account.address) return;
 
-  // const deactivateCourse = async courseHash => {
-  //   withToast(changeCourseState(courseHash, 'deactivateCourse'));
-  // };
+      const result = await contract.methods[method](courseHash).send({ from: account.address });
+      return result;
+    } catch (e) {
+      if (e instanceof Error) throw new Error(e.message);
+    }
+  };
 
-  // const searchCourse = async hash => {
-  //   const re = /[0-9A-Fa-f]{6}/g;
+  const activateCourse = async (courseHash: string) => {
+    changeCourseState(courseHash, 'activateCourse');
+  };
 
-  //   if (hash && hash.length === 66 && re.test(hash)) {
-  //     const course = await contract.methods.getCourseByHash(hash).call();
+  const deactivateCourse = async (courseHash: string) => {
+    changeCourseState(courseHash, 'deactivateCourse');
+  };
 
-  //     if (course.owner !== '0x0000000000000000000000000000000000000000') {
-  //       const normalized = normalizeOwnedCourse(web3)({ hash }, course);
-  //       setSearchedCourse(normalized);
-  //       return;
-  //     }
-  //   }
+  const renderCard = (course: INormalizeOwnedCourse, isSearched: boolean) => {
+    return (
+      <ManagedCard key={course.ownedCourseId} isSearched={isSearched} course={course}>
+        <VerificationInput
+          onVerify={email => {
+            verifyCourse(email, {
+              hash: course.hash,
+              proof: course.proof,
+            });
+          }}
+        />
 
-  //   setSearchedCourse(null);
-  // };
+        {course.hash && proofedOwnership[course.hash] && (
+          <div className="mt-2">
+            <Message>Verified!</Message>
+          </div>
+        )}
 
-  // const renderCard = (course, isSearched) => {
-  //   return (
-  //     <ManagedCourseCard key={course.ownedCourseId} isSearched={isSearched} course={course}>
-  //       <VerificationInput
-  //         onVerify={email => {
-  //           verifyCourse(email, {
-  //             hash: course.hash,
-  //             proof: course.proof,
-  //           });
-  //         }}
-  //       />
-  //       {proofedOwnership[course.hash] && (
-  //         <div className="mt-2">
-  //           <Message>Verified!</Message>
-  //         </div>
-  //       )}
-  //       {proofedOwnership[course.hash] === false && (
-  //         <div className="mt-2">
-  //           <Message type="danger">Wrong Proof!</Message>
-  //         </div>
-  //       )}
-  //       {course.state === 'purchased' && (
-  //         <div className="mt-2">
-  //           <Button onClick={() => activateCourse(course.hash)} variant="green">
-  //             Activate
-  //           </Button>
-  //           <Button onClick={() => deactivateCourse(course.hash)} variant="red">
-  //             Deactivate
-  //           </Button>
-  //         </div>
-  //       )}
-  //     </ManagedCourseCard>
-  //   );
-  // };
+        {course.hash && proofedOwnership[course.hash] === false && (
+          <div className="mt-2">
+            <Message type="danger">Wrong Proof!</Message>
+          </div>
+        )}
 
-  // if (!account.isAdmin)  return null;
+        {course.state === 'purchased' && (
+          <div className="mt-2">
+            <Button
+              onClick={() => {
+                if (course.hash) activateCourse(course.hash);
+              }}
+              variant="green"
+            >
+              Activate
+            </Button>
+            <Button
+              onClick={() => {
+                if (course.hash) deactivateCourse(course.hash);
+              }}
+              variant="red"
+            >
+              Deactivate
+            </Button>
+          </div>
+        )}
+      </ManagedCard>
+    );
+  };
 
-  // const filteredCourses = managedCourses.data
-  //   ?.filter(course => {
-  //     if (filters.state === 'all') {
-  //       return true;
-  //     }
+  const filteredCourses = managedCourses.data
+    ?.filter(course => {
+      if (filters.state === 'all') return true;
+      return course.state === filters.state;
+    })
+    .map(course => renderCard(course, !!searchedCourse));
 
-  //     return course.state === filters.state;
-  //   })
-  //   .map(course => renderCard(course));
-  const ownedCourses = useOwnedCourses(web3, contract)(courses, account.address);
+  const searchCourse = async (hash: string) => {
+    const re = /[0-9A-Fa-f]{6}/g;
+    if (!contract) return;
+
+    if (hash && hash.length === 66 && re.test(hash)) {
+      const course: IOwnerCurse = await contract.methods.getCourseByHash(hash).call();
+
+      if (course && course.owner !== '0x0000000000000000000000000000000000000000') {
+        const normalized = normalizeOwnedCourse(web3)({ hash }, course);
+        if (normalized) setSearchedCourse(normalized);
+        return;
+      }
+    }
+
+    setSearchedCourse(null);
+  };
   return (
     <>
       <div className="py-4">
         <MarketHeader />
-        <CourseFilter
-          onSearchSubmit={function (_searchText: string): void {
-            console.error('Function not implemented _searchText.');
-          }}
-          onFilterSelect={value => setFilters({ state: value })}
-        ></CourseFilter>
-      </div>
 
-      {/* <CourseFilter onFilterSelect={value => setFilters({ state: value })} onSearchSubmit={searchCourse} /> */}
+        {account.isAdmin && (
+          <CourseFilter onFilterSelect={value => setFilters({ state: value })} onSearchSubmit={searchCourse} />
+        )}
+      </div>
 
       <section className="grid grid-cols-1">
         {account.isLoading && (
@@ -188,32 +188,7 @@ const ManagedCourses: React.FC<Props> = ({ courses }): React.JSX.Element => {
           </div>
         )}
 
-        {courses.map(course => {
-          let owner: Omit<Required<IOwnerCurse>, 'id'> = {
-            state: 'deactivated',
-            ownedCourseId: '',
-            proof: '',
-            owner: '',
-            price: '',
-          };
-          if (ownedCourses.data) {
-            for (const owned of ownedCourses.data) {
-              if (course.id === owned.id) {
-                if (owned.ownedCourseId) owner.ownedCourseId = owned.ownedCourseId;
-                owner.price = owned.price;
-                owner.proof = owned.proof;
-                owner.owner = owned.owner;
-                owner.state = owned.state;
-              }
-            }
-          }
-          return (
-            <OwnedCourseCard key={course.id} course={{ ...course, ...owner }}>
-              <Button onClick={() => router.push(`/courses/${course.slug}`)}>Verify</Button>
-            </OwnedCourseCard>
-          );
-        })}
-        {/* {searchedCourse && (
+        {searchedCourse && account.isAdmin && (
           <div>
             <h1 className="text-2xl font-bold p-5">Search</h1>
             {renderCard(searchedCourse, true)}
@@ -221,7 +196,8 @@ const ManagedCourses: React.FC<Props> = ({ courses }): React.JSX.Element => {
         )}
         <h1 className="text-2xl font-bold p-5">All Courses</h1>
         {filteredCourses}
-        {filteredCourses?.length === 0 && <Message type="warning">No courses to display</Message>} */}
+        {filteredCourses?.length === 0 && <Message type="warning">No courses to display</Message>}
+        {!account.isAdmin && <Message type="warning">No courses to display</Message>}
       </section>
     </>
   );

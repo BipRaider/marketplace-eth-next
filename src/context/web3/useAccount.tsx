@@ -99,6 +99,7 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
       setChainId(parseInt(_chid, 16).toString());
     }
   };
+
   const notificationEvent = payload => {
     const { method, params } = payload;
     if (method === 'metamask_unlockStateChanged') {
@@ -146,7 +147,8 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
       provider?.removeAllListeners('message');
       provider?.removeAllListeners('accountsChanged');
       provider?.removeAllListeners('chainChanged');
-      provider?._jsonRpcConnection?.events?.removeAllListeners('notification');
+      // That's the way it should be. no removeAllListeners("notification").
+      provider?._jsonRpcConnection?.events?.removeListener('notification', notificationEvent);
     };
   }, [web3 && provider]);
 
