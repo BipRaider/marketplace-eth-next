@@ -87,33 +87,37 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
     }
   }, [web3]);
 
+  const accountsChangedEvent = async _addresses => {
+    if (web3) {
+      const accs = await web3.eth.getAccounts();
+      setAcc(accs);
+    }
+  };
+
+  const chainChangedEvent = async (_chid: '0x539' | '5777' | '0x5' | '0x1' | '0xe708' | '0x89') => {
+    if (chainId !== parseInt(_chid, 16).toString()) {
+      setChainId(parseInt(_chid, 16).toString());
+    }
+  };
+  const notificationEvent = payload => {
+    const { method, params } = payload;
+    if (method === 'metamask_unlockStateChanged') {
+      if (!params.isUnlocked) {
+        setAddresses([]);
+        setAddress(null);
+        setIsLoading(true);
+        setIsAdmin(false);
+        setChainId(null);
+      } else setAcc(params.accounts);
+    }
+  };
+
   const setAccountListener = useCallback(
     (prov: MetaMaskEthereumProvider): void => {
       if (!prov) return;
-      prov.on('accountsChanged', async _addresses => {
-        if (web3) {
-          const accs = await web3.eth.getAccounts();
-          setAcc(accs);
-        }
-      });
-      prov.on('chainChanged', async (_chid: '0x539' | '5777' | '0x5' | '0x1' | '0xe708' | '0x89') => {
-        if (chainId !== parseInt(_chid, 16).toString()) {
-          setChainId(parseInt(_chid, 16).toString());
-        }
-      });
-      // TODO: Have the problem with it. Making a lot of subscription
-      prov._jsonRpcConnection?.events.on('notification', payload => {
-        const { method, params } = payload;
-        if (method === 'metamask_unlockStateChanged') {
-          if (!params.isUnlocked) {
-            setAddresses([]);
-            setAddress(null);
-            setIsLoading(true);
-            setIsAdmin(false);
-            setChainId(null);
-          } else setAcc(params.accounts);
-        }
-      });
+      prov.on('accountsChanged', accountsChangedEvent);
+      prov.on('chainChanged', chainChangedEvent);
+      prov._jsonRpcConnection?.events.on('notification', notificationEvent);
     },
     [chainId, web3],
   );
@@ -138,6 +142,12 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
 
   useEffect(() => {
     if (web3 && provider && isLoading) setAccountListener(provider);
+    return () => {
+      provider?.removeAllListeners('message');
+      provider?.removeAllListeners('accountsChanged');
+      provider?.removeAllListeners('chainChanged');
+      provider?._jsonRpcConnection?.events?.removeAllListeners('notification');
+    };
   }, [web3 && provider]);
 
   return {

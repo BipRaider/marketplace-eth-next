@@ -14,7 +14,7 @@ import Web3, { SupportedProviders, EthExecutionAPI } from 'web3';
 // } from 'web3-types';
 
 type payloadJRpcCEon = 'metamask_unlockStateChanged' | 'metamask_chainChanged' | 'metamask_accountsChanged';
-type MMEPon = 'accountsChanged' | 'chainChanged';
+type MMEPon = 'accountsChanged' | 'chainChanged' | 'message';
 // https://ethereum.org/ru/developers/docs/apis/json-rpc/
 type REQ_METHODS = 'eth_sendTransaction' | 'eth_requestAccounts';
 
@@ -30,7 +30,8 @@ export interface MetaMaskEthereumProvider {
   _metamask?: any;
   _jsonRpcConnection?: {
     events: {
-      removeListener: (_name: string, _fn: () => {}) => {};
+      removeListener(_eventName: string | symbol, _listener: (..._args: any[]) => void): any;
+      removeAllListeners(_event?: string | symbol): any;
       on: (
         _eve: 'notification',
         _fn: (_payload: {
