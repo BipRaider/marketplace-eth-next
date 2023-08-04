@@ -31,7 +31,7 @@ const VerificationInput = ({ onVerify }: { onVerify: (_data: string) => void }):
       />
       <Button
         onClick={(): void => {
-          onVerify(email);
+          onVerify(email.trim());
         }}
       >
         Verify
@@ -60,14 +60,18 @@ const ManagedCourses: React.FC<Props> = (): React.JSX.Element => {
     if (!hash) return;
 
     const emailHash = web3.utils.sha3(email);
-    const proofToCheck = web3.utils.soliditySha3(
-      { type: 'bytes32', value: emailHash },
-      { type: 'bytes32', value: hash },
-    );
+    try {
+      const proofToCheck = web3.utils.soliditySha3(
+        { type: 'bytes32', value: emailHash },
+        { type: 'bytes32', value: hash },
+      );
 
-    proofToCheck === proof
-      ? setProofedOwnership({ ...proofedOwnership, [hash]: true })
-      : setProofedOwnership({ ...proofedOwnership, [hash]: false });
+      proofToCheck === proof
+        ? setProofedOwnership({ ...proofedOwnership, [hash]: true })
+        : setProofedOwnership({ ...proofedOwnership, [hash]: false });
+    } catch (error) {
+      setProofedOwnership({ ...proofedOwnership, [hash]: false });
+    }
   };
 
   const changeCourseState = async (courseHash: string, method: 'activateCourse' | 'deactivateCourse') => {
@@ -143,17 +147,18 @@ const ManagedCourses: React.FC<Props> = (): React.JSX.Element => {
       if (filters.state === 'all') return true;
       return course.state === filters.state;
     })
-    .map(course => renderCard(course, !!searchedCourse));
+    .map(course => renderCard(course, false));
 
   const searchCourse = async (hash: string) => {
+    const hashTrim = hash.trim();
     const re = /[0-9A-Fa-f]{6}/g;
     if (!contract) return;
 
-    if (hash && hash.length === 66 && re.test(hash)) {
-      const course: IOwnerCurse = await contract.methods.getCourseByHash(hash).call();
+    if (hashTrim && hashTrim.length === 66 && re.test(hashTrim)) {
+      const course: IOwnerCurse = await contract.methods.getCourseByHash(hashTrim).call();
 
       if (course && course.owner !== '0x0000000000000000000000000000000000000000') {
-        const normalized = normalizeOwnedCourse(web3)({ hash }, course);
+        const normalized = normalizeOwnedCourse(web3)({ hash: hashTrim }, course);
         if (normalized) setSearchedCourse(normalized);
         return;
       }
@@ -161,6 +166,7 @@ const ManagedCourses: React.FC<Props> = (): React.JSX.Element => {
 
     setSearchedCourse(null);
   };
+
   return (
     <>
       <div className="py-4">
@@ -188,13 +194,13 @@ const ManagedCourses: React.FC<Props> = (): React.JSX.Element => {
           </div>
         )}
 
-        {searchedCourse && account.isAdmin && (
+        {searchedCourse && (
           <div>
-            <h1 className="text-2xl font-bold p-5">Search</h1>
+            <h1 className="text-2xl font-bold p-5 bg-green-200  rounded-xl">Search</h1>
             {renderCard(searchedCourse, true)}
           </div>
         )}
-        <h1 className="text-2xl font-bold p-5">All Courses</h1>
+        <h1 className="text-2xl font-bold p-5  rounded-xl">All Courses</h1>
         {filteredCourses}
         {filteredCourses?.length === 0 && <Message type="warning">No courses to display</Message>}
         {!account.isAdmin && <Message type="warning">No courses to display</Message>}

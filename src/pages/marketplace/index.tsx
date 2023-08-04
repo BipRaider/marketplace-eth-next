@@ -7,6 +7,7 @@ import { getAllCourses } from '@src/content/courses/fetcher';
 import { ICourses } from '@src/types';
 import { useCoursesContext, useWeb3Context } from '@src/context';
 import { bytes16 } from '@src/utils';
+import { useOwnedCourses } from '@src/hooks';
 
 interface Props extends Record<string, unknown> {
   courses: ICourses[];
@@ -17,14 +18,12 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
     web3: { web3 },
     contract: { contract },
     account,
-    isLoading,
   } = useWeb3Context();
 
   const { selectedCourse, isNewPurchase, busyCourseId, setBusyCourseId, setSelectedCourse, setIsNewPurchase } =
     useCoursesContext();
 
-  // const { hasConnectedWallet, isConnecting } = useWalletInfo();
-  // const { ownedCourses } = useOwnedCourses(courses, account.data);
+  const ownedCourses = useOwnedCourses(web3, contract)(courses, account.address);
 
   const purchaseCourse = async (order: { price: number | string; email: string }, course: ICourses) => {
     if (!web3) return console.error('Web3 is not connected.');
@@ -44,20 +43,19 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
       { type: 'address', value: account.address },
     );
 
-    // if (isNewPurchase) {
-    if (!emailHash) return;
-    if (!orderHash) return;
+    if (isNewPurchase) {
+      if (!emailHash) return;
+      if (!orderHash) return;
 
-    const proof = web3.utils.soliditySha3(
-      { type: 'bytes32', value: emailHash.substring(2, emailHash.length) },
-      { type: 'bytes32', value: orderHash.substring(2, orderHash.length) },
-    );
+      const proof = web3.utils.soliditySha3(
+        { type: 'bytes32', value: emailHash.substring(2, emailHash.length) },
+        { type: 'bytes32', value: orderHash.substring(2, orderHash.length) },
+      );
 
-    _purchaseCourse({ hexCourseId, proof, priceEther }, course);
-    // }
-    //  else {
-    //   _repurchaseCourse({ courseHash: orderHash, priceEther }, course);
-    // }
+      _purchaseCourse({ hexCourseId, proof, priceEther }, course);
+    } else {
+      _repurchaseCourse({ courseHash: orderHash, priceEther }, course);
+    }
   };
 
   const _purchaseCourse = async (
@@ -68,21 +66,22 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
       if (!contract) return;
       if (!proof) return;
       if (!account.address) return;
+      if (!ownedCourses.data) return;
 
       const result = await contract.methods
         .purchaseCourse(bytes16(hexCourseId), proof)
         .send({ from: account.address, value: priceEther });
 
-      // ownedCourses.mutate([
-      //   ...ownedCourses.data,
-      //   {
-      //     ...course,
-      //     proof,
-      //     state: 'purchased',
-      //     owner: account.data,
-      //     price: value,
-      //   },
-      // ]);
+      ownedCourses.mutate([
+        ...ownedCourses.data,
+        {
+          ...course,
+          proof,
+          state: 'purchased',
+          owner: account.address,
+          price: priceEther,
+        },
+      ]);
       return result;
     } catch (error) {
       if (error instanceof Error) console.error(error.message);
@@ -104,14 +103,14 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
         .repurchaseCourse(courseHash)
         .send({ from: account.address, value: priceEther });
 
-      // const index = ownedCourses.data.findIndex(c => c.id === course.id);
+      const index = ownedCourses.data?.findIndex(c => c.id === course.id);
 
-      // if (index >= 0) {
-      //   ownedCourses.data[index].state = 'purchased';
-      //   ownedCourses.mutate(ownedCourses.data);
-      // } else {
-      //   ownedCourses.mutate();
-      // }
+      if (index && index >= 0 && ownedCourses.data) {
+        ownedCourses.data[index].state = 'purchased';
+        ownedCourses.mutate(ownedCourses.data);
+      } else {
+        ownedCourses.mutate();
+      }
       return result;
     } catch (error) {
       if (error instanceof Error) console.error(error.message);
@@ -141,103 +140,6 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
           onClose={cleanupModal}
         />
       )}
-      {/* <CourseList courses={courses}>
-        {course => {
-          const owned = ownedCourses.lookup[course.id];
-          return (
-            <CourseCard
-              key={course.id}
-              course={course}
-              state={owned?.state}
-              disabled={!hasConnectedWallet}
-              Footer={() => {
-                if (isLoading) {
-                  return (
-                    <Button size="sm" disabled={true} variant="lightPurple">
-                      Install
-                    </Button>
-                  );
-                }
-
-                if (isConnecting) {
-                  return (
-                    <Button size="sm" disabled={true} variant="lightPurple">
-                      <Loader size="sm" />
-                    </Button>
-                  );
-                }
-
-                if (!ownedCourses.hasInitialResponse) {
-                  return (
-                    // <div style={{height: "42px"}}></div>
-                    <Button variant="white" disabled={true} size="sm">
-                      {hasConnectedWallet ? 'Loading State...' : 'Connect'}
-                    </Button>
-                  );
-                }
-
-                const isBusy = busyCourseId === course.id;
-                if (owned) {
-                  return (
-                    <>
-                      <div className="flex">
-                        <Button
-                          onClick={() => alert('You are owner of this course.')}
-                          disabled={false}
-                          size="sm"
-                          variant="white"
-                        >
-                          Yours &#10004;
-                        </Button>
-                        {owned.state === 'deactivated' && (
-                          <div className="ml-1">
-                            <Button
-                              size="sm"
-                              disabled={isBusy}
-                              onClick={() => {
-                                setIsNewPurchase(false);
-                                setSelectedCourse(course);
-                              }}
-                              variant="purple"
-                            >
-                              {isBusy ? (
-                                <div className="flex">
-                                  <Loader size="sm" />
-                                  <div className="ml-2">In Progress</div>
-                                </div>
-                              ) : (
-                                <div>Fund to Activate</div>
-                              )}
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    </>
-                  );
-                }
-
-                return (
-                  <Button
-                    onClick={() => setSelectedCourse(course)}
-                    size="sm"
-                    disabled={!hasConnectedWallet || isBusy}
-                    variant="lightPurple"
-                  >
-                    {isBusy ? (
-                      <div className="flex">
-                        <Loader size="sm" />
-                        <div className="ml-2">In Progress</div>
-                      </div>
-                    ) : (
-                      <div>Purchase</div>
-                    )}
-                  </Button>
-                );
-              }}
-            />
-          );
-        }}
-      </CourseList> */}
     </>
   );
 };
@@ -252,6 +154,3 @@ export const getStaticProps: GetStaticProps<Props> = () => {
     },
   };
 };
-function withToast(arg0: any) {
-  throw new Error('Function not implemented.');
-}

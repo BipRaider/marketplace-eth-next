@@ -72,6 +72,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
+    "test/courseMarcetplace.test.js",
   ],
   "exclude": [
     "node_modules",

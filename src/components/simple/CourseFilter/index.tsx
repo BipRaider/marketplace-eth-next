@@ -12,7 +12,9 @@ export const CourseFilter: React.FC<CourseFilterProps> = ({ onSearchSubmit, onFi
     <div className="flex flex-col md:flex-row items-center my-4">
       <div className="flex mr-2 relative rounded-md">
         <input
-          onChange={({ target: { value } }): void => setSearchTest(value)}
+          onChange={({ target: { value } }): void => {
+            setSearchTest(value);
+          }}
           value={searchText}
           type="text"
           name="courseHash"

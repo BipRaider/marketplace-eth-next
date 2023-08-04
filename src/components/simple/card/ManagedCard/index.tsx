@@ -20,7 +20,7 @@ export const ManagedCard: React.FC<ManagedCardProps> = ({
 }): React.JSX.Element => {
   return (
     <div
-      className={cn('bg-white border shadow overflow-hidden sm:rounded-lg mb-3', {
+      className={cn('bg-white border shadow overflow-hidden sm:rounded-lg mb-3 ', {
         ['border-indigo-600']: isSearched,
         ['bg-gray-200']: !isSearched,
       })}
