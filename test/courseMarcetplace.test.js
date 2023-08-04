@@ -1,6 +1,6 @@
 const CourseMarketplace = artifacts.require('CourseMarketplace');
 const { catchRevert } = require('./utils/exceptions');
-const web3 = require('web3');
+
 // Mocha - testing framework
 // Chai - assertion JS library
 
@@ -43,15 +43,6 @@ contract('CourseMarketplace', accounts => {
       });
     });
 
-    it('should NOT allow to repurchase already owned course', async () => {
-      await catchRevert(
-        _contract.purchaseCourse(courseId, proof, {
-          from: buyer,
-          value,
-        }),
-      );
-    });
-
     it('can get the purchased course hash by index', async () => {
       const index = 0;
       courseHash = await _contract.getCourseHashAtIndex(index);
@@ -61,6 +52,15 @@ contract('CourseMarketplace', accounts => {
       );
 
       assert.equal(courseHash, expectedHash, 'Course hash is not maching the hash of purchased course!');
+    });
+
+    it('should NOT allow to repurchase already owned course', async () => {
+      await catchRevert(
+        _contract.purchaseCourse(courseId, proof, {
+          from: buyer,
+          value,
+        }),
+      );
     });
 
     it('should match the data of the course purchased by buyer', async () => {

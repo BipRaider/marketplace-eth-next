@@ -6,5 +6,6 @@ export interface IndicatorProps extends DetailedHTMLProps<HTMLAttributes<HTMLSpa
   color?: 'red' | 'green';
   greenIcon?: boolean;
   redIcon?: boolean;
+  yellowIcon?: boolean;
   loading?: boolean;
 }

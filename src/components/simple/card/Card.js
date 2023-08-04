@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import { AnimateKeyframes } from 'react-simple-animate';
 
 export default function Card({ course, disabled = false, Footer = false, state = 'activated' }) {

@@ -1,16 +1,18 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import Img from 'next/image';
 import Link from 'next/link';
 import cn from 'classnames';
 
 import { CourseCardProps } from './props';
-import { Button } from '@src/components/common';
+import { Button, Indicator } from '@src/components/common';
 import { useWeb3Context } from '@src/context';
 
-export const CourseCard: React.FC<CourseCardProps> = ({ course, purchase, onClickHandler }) => {
+export const CourseCard: React.FC<CourseCardProps> = ({ course, courseOwner, purchase, onClickHandler }) => {
   const { account, network } = useWeb3Context();
-
+  const router = useRouter();
   const dis = !account.isLoading && network.isSupported;
+
   return (
     <div className="flex h-full">
       <div className="flex-1 h-full">
@@ -18,8 +20,8 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, purchase, onClic
           className={cn('object-cover h-full', {
             ['filter grayscale']: !dis && purchase,
           })}
-          src={course.coverImage}
-          alt={course.title}
+          src={course.coverImage ? course.coverImage : '/'}
+          alt={course.title ? course.title : ''}
           width={300}
           height={360}
           loading="lazy"
@@ -36,9 +38,25 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, purchase, onClic
         <p className="mt-2 text-gray-500">{course?.description?.substring(0, 70)}...</p>
         {purchase && (
           <div className="mt-4">
-            <Button disabled={!dis} variant="lightPurple" onClick={e => onClickHandler(e, course)}>
-              Purchase
-            </Button>
+            {dis && (
+              <>
+                <Button
+                  disabled={!dis}
+                  variant={courseOwner ? 'green' : 'lightPurple'}
+                  onClick={e => {
+                    if (!courseOwner) onClickHandler(e, course);
+                    else router.push(`/courses/${course.slug}`);
+                  }}
+                >
+                  {courseOwner ? 'Watch the course' : 'Purchase'}
+                </Button>
+                <Indicator
+                  greenIcon={courseOwner?.state === 'activated'}
+                  redIcon={courseOwner?.state === 'deactivated'}
+                  yellowIcon={courseOwner?.state === 'purchased'}
+                ></Indicator>
+              </>
+            )}
           </div>
         )}
       </div>

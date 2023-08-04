@@ -129,6 +129,7 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
       <MarketHeader />
 
       <CoursesPage courses={courses} purchase={true} />
+
       {selectedCourse && (
         <OrderModal
           course={selectedCourse}

@@ -4,6 +4,7 @@ import cn from 'classnames';
 import { Loader } from '@src/components/common';
 import { IndicatorProps } from './props';
 
+// https://emojipedia.org/search/?q=Circle
 export const Indicator: React.FC<IndicatorProps> = ({
   className,
   children,
@@ -12,6 +13,7 @@ export const Indicator: React.FC<IndicatorProps> = ({
   greenIcon,
   redIcon,
   loading,
+  yellowIcon,
   size,
 }): React.JSX.Element => {
   if (text) {
@@ -28,6 +30,7 @@ export const Indicator: React.FC<IndicatorProps> = ({
   }
   if (greenIcon) return <span className={cn(className)}>{'🟢'}</span>;
   if (redIcon) return <span className={cn(className)}>{'🔴'}</span>;
+  if (yellowIcon) return <span className={cn(className)}>{'🟡'}</span>;
   if (loading) return <Loader size={size ? size : 'sm'} />;
   return <>{children}</>;
 };
