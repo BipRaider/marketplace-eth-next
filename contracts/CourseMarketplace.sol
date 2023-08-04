@@ -65,15 +65,17 @@ contract CourseMarketplace {
     require(isStopped,"is stopped!");
     _;
   }
-
+  // It is default func. we could top up the our contract
   receive() external payable {}
 
   function withdraw(uint amount) external onlyOwner {
+  // With this method, we can send some value of the ether to the owner of the contract
     (bool success, ) = owner.call{value: amount}("");
     require(success, "Transfer failed.");
   }
 
   function emergencyWithdraw() external onlyWhenStopped onlyOwner {
+     // With this method, we can send all balance of the ether to the owner of the contract
     (bool success, ) = owner.call{value: address(this).balance}("");
     require(success, "Transfer failed.");
   }
