@@ -9,6 +9,13 @@ declare namespace NodeJS {
     readonly NEXT_PUBLIC_TARGET_CHAIN_ID: string;
     /*** It's the network id of the contracts. */
     readonly NEXT_PUBLIC_NETWORK_ID: string;
+    readonly NEXT_PUBLIC_NETWORK_ID_MAINNET: string;
+    readonly NEXT_PUBLIC_TARGET_CHAIN_ID_MAINNET: string;
+    readonly NEXT_PUBLIC_NETWORK_ID_GEORLI: string;
+    readonly NEXT_PUBLIC_TARGET_CHAIN_ID_GEORLI: string;
+    readonly NEXT_PUBLIC_NETWORK_ID_SEPOLIA: string;
+    readonly NEXT_PUBLIC_TARGET_CHAIN_ID_SEPOLIA: string;
+
     readonly NEXT_PUBLIC_PARSE_SERVER_URL: string;
     readonly NEXT_PUBLIC_PARSE_ID: string;
     readonly NEXT_PUBLIC_PARSE_JAVASCRIPT_KEY: string;

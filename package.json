@@ -21,7 +21,18 @@
     "truffle-mig-r": "truffle migrate --reset",
     "truffle-com": "truffle compile",
     "truffle-con": "truffle console",
-    "truffle-test": "truffle test"
+    "truffle-con-mainnet": "truffle console --network mainnet",
+    "truffle-mig-mainnet": "truffle migrate --network mainnet",
+    "truffle-con-goerli": "truffle console --network goerli",
+    "truffle-mig-goerli": "truffle migrate --network goerli",
+    "truffle-con-sepolia": "truffle console --network sepolia",
+    "truffle-mig-sepolia": "truffle migrate --network sepolia",
+    "truffle-test": "truffle test",
+    "abi:extract": "truffle-extract --output abi/ --keys abi",
+    "bytecode:extract": "truffle-bytecode extract -o bytecode",
+    "bytecode:extract:new": "truffle-bytecode extract -o bytecode_new",
+    "bytecode:compare": "npm run bytecode:extract:new && truffle-bytecode compare bytecode bytecode_new",
+    "lint:sol": "solhint --max-warnings 0 \"contracts/**/*.sol\""
   },
   "dependencies": {
     "@metamask/detect-provider": "^2.0.0",

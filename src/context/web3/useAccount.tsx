@@ -4,11 +4,13 @@ import { useEffect, useState, useCallback } from 'react';
 import { ILoadWeb3 } from './useLoadWeb3';
 import { ILoadProvider } from './useLoadProvider';
 import { MetaMaskEthereumProvider } from './web3.interface';
-
+// https://emn178.github.io/online-tools/keccak_256.html
+// address encode to hex and add 0x before
 const adminAddresses = [
-  '0x2cE8e88f515F4ECd98E490d10081963FD03A5665',
-  '0x6DA4827AD94a60712b7AAe113092DFaD008ADd34',
-  '0x23F95f073353D66542FDb928a0118Bfa4D0411a4',
+  '0x4da3208db6cd201500a4db2d0cff90cb1cc514261a12b93991d64c3f7f74cf91',
+  '0xb1df09e26c967e4bef898d1ce95db8a504b9ec305945cfb53df0a16497411006',
+  '0x4c0ca7cf80d288acdd95aaa3fc9e997c9e2bba65b17db9a03a53bc9add4e8c5f',
+  '0x3c4b8295eabc0bc82ca7c49c65bf3cec323ed3ecaf1b06d361d85df6aa5928d2',
 ];
 
 export interface IAccount {
@@ -63,8 +65,9 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
       setIsAdmin(false);
       if (address !== accs[0]) {
         setAddress(accs[0]);
+        const acc = web3?.utils.keccak256(accs[0]);
         for (const adminAddress of adminAddresses) {
-          if (accs[0] === adminAddress) setIsAdmin(() => true);
+          if (acc === adminAddress) setIsAdmin(() => true);
         }
       }
     }
