@@ -4,7 +4,8 @@ declare namespace NodeJS {
 
     readonly MNEMONIC: string;
     readonly INFURA_PROJECT_ID: string;
-
+    /*** The owner of the contract */
+    readonly NEXT_PUBLIC_OWNER: string;
     /*** It's the id of network that is support. */
     readonly NEXT_PUBLIC_TARGET_CHAIN_ID: string;
     /*** It's the network id of the contracts. */

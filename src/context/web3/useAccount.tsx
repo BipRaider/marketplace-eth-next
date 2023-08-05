@@ -8,8 +8,6 @@ import { MetaMaskEthereumProvider } from './web3.interface';
 // address encode to hex and add 0x before
 const adminAddresses = [
   '0x4da3208db6cd201500a4db2d0cff90cb1cc514261a12b93991d64c3f7f74cf91',
-  '0xb1df09e26c967e4bef898d1ce95db8a504b9ec305945cfb53df0a16497411006',
-  '0x4c0ca7cf80d288acdd95aaa3fc9e997c9e2bba65b17db9a03a53bc9add4e8c5f',
   '0x3c4b8295eabc0bc82ca7c49c65bf3cec323ed3ecaf1b06d361d85df6aa5928d2',
 ];
 
@@ -66,9 +64,8 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
       if (address !== accs[0]) {
         setAddress(accs[0]);
         const acc = web3?.utils.keccak256(accs[0]);
-        for (const adminAddress of adminAddresses) {
-          if (acc === adminAddress) setIsAdmin(() => true);
-        }
+        const owner = process?.env?.NEXT_PUBLIC_OWNER || '';
+        if (acc === owner) setIsAdmin(() => true);
       }
     }
   };

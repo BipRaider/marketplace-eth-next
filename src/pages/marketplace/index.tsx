@@ -84,7 +84,7 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
       ]);
       return result;
     } catch (error) {
-      if (error instanceof Error) console.error(error.message);
+      if (error instanceof Error) throw new Error(error.message);
     } finally {
       setBusyCourseId(null);
     }
@@ -113,7 +113,7 @@ const Marketplace = ({ courses }: Props): React.JSX.Element => {
       }
       return result;
     } catch (error) {
-      if (error instanceof Error) console.error(error.message);
+      if (error instanceof Error) throw new Error(error.message);
     } finally {
       setBusyCourseId(null);
     }

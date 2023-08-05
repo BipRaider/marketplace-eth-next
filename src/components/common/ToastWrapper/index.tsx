@@ -42,7 +42,7 @@ export const withToast = (promise: any) => {
             <div>
               <p className="font-bold">Tx: {data?.transactionHash?.slice(0, 20)}...</p>
               <p>Has been succesfuly processed.</p>
-              <a href={`https://ropsten.etherscan.io/tx/${data?.transactionHash}`} target="_blank">
+              <a href={`https://goerli.etherscan.io//tx/${data?.transactionHash}`} target="_blank">
                 <i className="text-indigo-600 underline">See Tx Details</i>
               </a>
             </div>

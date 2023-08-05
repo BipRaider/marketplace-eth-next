@@ -4,7 +4,7 @@ import { GetStaticProps } from 'next/types';
 import { useWeb3Context } from '@src/context';
 import { MarketHeader } from '@src/components/higher';
 import { withLayout } from '@src/components/main';
-import { Button, Message } from '@src/components/common';
+import { Button, Message, withToast } from '@src/components/common';
 import { CourseFilter, ManagedCard } from '@src/components/simple';
 import { getAllCourses } from '@src/content/courses/fetcher';
 import { ICourses, INormalizeOwnedCourse, IOwnerCurse } from '@src/types';
@@ -87,11 +87,11 @@ const ManagedCourses: React.FC<Props> = (): React.JSX.Element => {
   };
 
   const activateCourse = async (courseHash: string) => {
-    changeCourseState(courseHash, 'activateCourse');
+    withToast(changeCourseState(courseHash, 'activateCourse'));
   };
 
   const deactivateCourse = async (courseHash: string) => {
-    changeCourseState(courseHash, 'deactivateCourse');
+    withToast(changeCourseState(courseHash, 'deactivateCourse'));
   };
 
   const renderCard = (course: INormalizeOwnedCourse, isSearched: boolean) => {
