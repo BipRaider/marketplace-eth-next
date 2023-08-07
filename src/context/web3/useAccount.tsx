@@ -41,7 +41,7 @@ export const baseAccountContext: Readonly<IAccount> = {
   },
 };
 
-export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IAccount => {
+export const useAccount = ({ web3, ...web3Params }: ILoadWeb3, { provider }: ILoadProvider): IAccount => {
   const [addresses, setAddresses] = useState<string[] | null>(null);
   const [address, setAddress] = useState<string | null>(null);
   const [chainId, setChainId] = useState<string | null>(null);
@@ -65,10 +65,11 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
   };
 
   const checkAdmin = useCallback(
-    (addr: string): void => {
+    (addr: string | null): void => {
       if (addr) {
+        const acc = web3?.utils.keccak256(addr);
         const owner = process?.env?.NEXT_PUBLIC_OWNER || '';
-        if (addr === owner) setIsAdmin(() => true);
+        if (acc === owner) setIsAdmin(() => true);
       }
     },
     [address, isAdmin],
@@ -132,7 +133,7 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
 
   useEffect(() => {
     if (address && !isAdmin) checkAdmin(address);
-  }, [address, isAdmin]);
+  }, [address, isAdmin, web3Params.isLoading]);
 
   useEffect(() => {
     if (web3) getAccounts();
