@@ -4,7 +4,6 @@ import cn from 'classnames';
 import { HeroProps } from './props';
 
 const text = {
-  start: 'Get started',
   learn: 'Learn programming and web development the easy way! Get unlimited access to all of our courses.',
   grow: 'Grow your career as a developer',
 };

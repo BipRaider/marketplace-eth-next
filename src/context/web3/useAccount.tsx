@@ -4,12 +4,6 @@ import { useEffect, useState, useCallback } from 'react';
 import { ILoadWeb3 } from './useLoadWeb3';
 import { ILoadProvider } from './useLoadProvider';
 import { MetaMaskEthereumProvider } from './web3.interface';
-// https://emn178.github.io/online-tools/keccak_256.html
-// address encode to hex and add 0x before
-const adminAddresses = [
-  '0x4da3208db6cd201500a4db2d0cff90cb1cc514261a12b93991d64c3f7f74cf91',
-  '0x3c4b8295eabc0bc82ca7c49c65bf3cec323ed3ecaf1b06d361d85df6aa5928d2',
-];
 
 export interface IAccount {
   /*** Get all account from `MetaMask`.*/
@@ -72,7 +66,10 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
 
   const checkAdmin = useCallback(
     (addr: string): void => {
-      if (addr) for (const adminAddress of adminAddresses) if (addr === adminAddress) setIsAdmin(() => true);
+      if (addr) {
+        const owner = process?.env?.NEXT_PUBLIC_OWNER || '';
+        if (addr === owner) setIsAdmin(() => true);
+      }
     },
     [address, isAdmin],
   );
