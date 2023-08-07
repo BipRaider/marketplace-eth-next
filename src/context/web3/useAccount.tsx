@@ -82,7 +82,7 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
       const network = await web3.eth.getChainId();
       setChainId(network.toString());
     }
-  }, [web3]);
+  }, [web3, provider]);
 
   const accountsChangedEvent = async _addresses => {
     if (web3) {
@@ -141,11 +141,13 @@ export const useAccount = ({ web3 }: ILoadWeb3, { provider }: ILoadProvider): IA
   useEffect(() => {
     if (web3 && provider && isLoading) setAccountListener(provider);
     return () => {
-      provider?.removeAllListeners('message');
-      provider?.removeAllListeners('accountsChanged');
-      provider?.removeAllListeners('chainChanged');
-      // That's the way it should be. no removeAllListeners("notification").
-      provider?._jsonRpcConnection?.events?.removeListener('notification', notificationEvent);
+      if (web3 && provider && isLoading) {
+        provider?.removeAllListeners('message');
+        provider?.removeAllListeners('accountsChanged');
+        provider?.removeAllListeners('chainChanged');
+        // That's the way it should be. no removeAllListeners("notification").
+        provider?._jsonRpcConnection?.events?.removeListener('notification', notificationEvent);
+      }
     };
   }, [web3 && provider]);
 
