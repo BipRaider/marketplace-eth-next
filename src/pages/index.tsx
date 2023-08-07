@@ -2,7 +2,7 @@ import React from 'react';
 import { GetStaticProps } from 'next/types';
 
 import { withLayout } from '@components/main';
-import { WalletBar, CurrentPrice, Hero, OrderInfo } from '@components/higher';
+import { WalletBar, CurrentPrice, Hero } from '@components/higher';
 
 interface Props extends Record<string, unknown> {}
 
@@ -13,7 +13,6 @@ function Home(): React.JSX.Element {
         <Hero />
         <WalletBar />
         <CurrentPrice />
-        <OrderInfo />
       </div>
     </>
   );

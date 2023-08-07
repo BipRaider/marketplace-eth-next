@@ -32,7 +32,10 @@ const getContract = async (name: ContractNameList, web3: Web3): Promise<ILoadCon
 };
 
 /*** Get contract.*/
-export const useLoadContract = ({ web3, ...web3Params }: ILoadWeb3, _provider: ILoadProvider): ILoadContract => {
+export const useLoadContract = (
+  { web3, ...web3Params }: ILoadWeb3,
+  { provider, ...providerParams }: ILoadProvider,
+): ILoadContract => {
   const [contract, setContract] = useState<ILoadContract['contract']>(null);
   const [error, setError] = useState<string | null>(null);
   const [contractName, setContractName] = useState<ContractNameList | null>(null);
@@ -53,12 +56,12 @@ export const useLoadContract = ({ web3, ...web3Params }: ILoadWeb3, _provider: I
         setIsLoading(false);
       }
     },
-    [web3],
+    [web3, provider],
   );
 
   useEffect((): void => {
-    if (!web3Params.isLoading) loadContract();
-  }, [web3Params.isLoading]);
+    if (!providerParams.isLoading || !web3Params.isLoading) loadContract();
+  }, [web3Params.isLoading, providerParams.isLoading]);
 
   useEffect((): void => {
     if (!contract && !isLoading) loadContract();
