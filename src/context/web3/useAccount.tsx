@@ -51,6 +51,7 @@ export const useAccount = ({ web3, ...web3Params }: ILoadWeb3, { provider }: ILo
 
   const setAcc = (accs: string[]) => {
     setIsLoading(true);
+
     if (accs && accs.length > 0) {
       setAddresses(accs);
       setIsLoading(false);
@@ -83,12 +84,12 @@ export const useAccount = ({ web3, ...web3Params }: ILoadWeb3, { provider }: ILo
       const network = await web3.eth.getChainId();
       setChainId(network.toString());
     }
-  }, [web3, provider]);
+  }, [web3, provider, address]);
 
   const accountsChangedEvent = async _addresses => {
     if (web3) {
-      const accs = await web3.eth.getAccounts();
-      setAcc(accs);
+      // const accs = await web3.eth.getAccounts();
+      setAcc(_addresses);
     }
   };
 
